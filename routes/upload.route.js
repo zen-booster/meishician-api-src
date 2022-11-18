@@ -10,7 +10,7 @@ const { isAuth } = require('../services/auth');
 const router = express.Router();
 
 router.post(
-  '/imgage',
+  '/image',
   isAuth,
   upload,
   handleErrorAsync(async (req, res, next, err) => {
