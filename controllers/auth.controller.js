@@ -11,16 +11,16 @@ const signUp = handleErrorAsync(async (req, res, next) => {
   const existedUser = await User.findOne({ email });
   if (existedUser)
     return next(new AppError(httpStatus.BAD_REQUEST, 'Email already taken'));
-  const newUser = await User.create(req.body);
-  const token = generateJWT({ id: newUser._id });
+  const user = await User.create(req.body);
+  const token = generateJWT({ id: user._id });
   return res.status(httpStatus.CREATED).send({
     status: 'success',
     token,
     data: {
       user: {
-        name: newUser.name,
-        email: newUser.email,
-        avatar: newUser.avatar,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
       },
     },
   });
@@ -76,19 +76,21 @@ const resetPassword = handleErrorAsync(async (req, res, next) => {
 });
 
 const updateProfile = handleErrorAsync(async (req, res) => {
-  const { name, avatar } = req.body;
   const userID = req.user._id;
-
-  const newUserProfile = await User.findByIdAndUpdate(
-    { _id: userID },
-    { name },
-    { new: true }
-  );
+  const updateData = req.body;
+  const user = await User.findByIdAndUpdate({ _id: userID }, updateData, {
+    new: true,
+  });
 
   return res.status(httpStatus.OK).json({
     status: 'success',
-    name: newUserProfile.name,
-    email: newUserProfile.email,
+    data: {
+      user: {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    },
   });
 });
 

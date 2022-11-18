@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
       // find的時候不顯示
       // get: formatDateTime,
     },
+    avatar: String,
   },
   { strictQuery: false }
 );
