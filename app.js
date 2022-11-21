@@ -4,8 +4,11 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const swaggerDocs = require('./utils/swagger');
+
 const uploadRouter = require('./routes/upload.route');
 const userRouter = require('./routes/users.route');
+const portfolioRouter = require('./routes/portfolio.route');
 // const authRouter = require('./routes/auth.route');
 
 require('./connections/mongodb');
@@ -23,6 +26,9 @@ app.use(cookieParser());
 app.use(cors());
 app.use('/api/users', userRouter);
 app.use('/api/upload', uploadRouter);
+app.use('/api/portfolio', portfolioRouter);
+
+swaggerDocs(app);
 
 // 上線版本錯誤訊息
 const resErrorProd = (err, res) => {

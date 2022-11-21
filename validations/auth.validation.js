@@ -5,6 +5,42 @@ const { User } = require('../models');
 
 const safetyQuestionEnum = User.schema.path('safetyQuestion').enumValues;
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    signUp:
+ *      type: object
+ *      required:
+ *        - name
+ *        - email
+ *        - password
+ *        - confirmPassword
+ *        - safetyQuestion
+ *        - safetyAnswer
+ *      properties:
+ *        name:
+ *          type: string
+ *          default: Jane Doe
+ *        email:
+ *          type: string
+ *          default: jane.doe@example.com
+ *        password:
+ *          type: string
+ *          default: stringPassword123
+ *        confirmPassword:
+ *          type: string
+ *          default: stringPassword123
+ *        safetyQuestion:
+ *          type: string
+ *          enum: ['Q1_FIRST_PET_NAME', 'Q2_PARENTS_CITY']
+ *        safetyAnswer:
+ *          type: string
+ *        avatar:
+ *          type: string
+ *      additionalProperties: false
+ */
+
 const signUp = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -22,6 +58,25 @@ const signUp = {
   }),
 };
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    login:
+ *      type: object
+ *      required:
+ *        - email
+ *        - password
+ *      properties:
+ *        email:
+ *          type: string
+ *          default: jane.doe@example.com
+ *        password:
+ *          type: string
+ *          default: stringPassword123
+ *      additionalProperties: false
+
+ */
 const login = {
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -39,6 +94,35 @@ const updatePassword = {
   }),
 };
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    resetPassword:
+ *      type: object
+ *      required:
+ *        - email
+ *        - password
+ *        - confirmPassword
+ *        - safetyQuestion
+ *        - safetyAnswer
+ *      properties:
+ *        email:
+ *          type: string
+ *          default: jane.doe@example.com
+ *        password:
+ *          type: string
+ *          default: stringPassword123
+ *        confirmPassword:
+ *          type: string
+ *          default: stringPassword123
+ *        safetyQuestion:
+ *          type: string
+ *          enum: ['Q1_FIRST_PET_NAME', 'Q2_PARENTS_CITY']
+ *        safetyAnswer:
+ *          type: string
+ *      additionalProperties: false
+ */
 const resetPassword = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -54,6 +138,22 @@ const resetPassword = {
   }),
 };
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    updateProfile:
+ *      type: object
+ *      properties:
+ *        name:
+ *          type: string
+ *          default: Jane Doe
+ *        avatar:
+ *          type: string
+ *          example: 'https://i.imgur.com/fgOXKnw.jpg'
+ *      additionalProperties: false
+ *      minProperties: 1
+ */
 const updateProfile = {
   body: Joi.object()
     .keys({

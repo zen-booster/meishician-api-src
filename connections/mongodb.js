@@ -4,7 +4,7 @@ const path = require('path');
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
-const DB_NAME = 'meishicianDB';
+const DB_NAME = 'MEISHIcianDB';
 
 const dbPath = process.env.DB_PATH.replace(
   '<password>',
@@ -18,5 +18,5 @@ mongoose.connect(
     useUnifiedTopology: true,
     autoIndex: true,
   },
-  () => console.log('Mongoose is connected for users collection')
+  () => console.log('Mongoose is connected')
 );

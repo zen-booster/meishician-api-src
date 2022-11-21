@@ -1,0 +1,11 @@
+{
+  "jobInfoData": {
+    "name": "{{$randomFullName}}",
+    "companyName": "{{$randomCompanyName}}",
+    "jobTitle": "{{$randomJobTitle}}",
+    "phoneNumber": "{{$randomPhoneNumber}}",
+    "city": "Kaohsiung",
+    "domain": "tech"
+  },
+  "layoutDirection": "horizontal"
+}

@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
 
-const { User } = require('../models');
+const { User, BookmarkList } = require('../models');
 const { generateJWT } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
@@ -13,6 +13,9 @@ const signUp = handleErrorAsync(async (req, res, next) => {
     return next(new AppError(httpStatus.BAD_REQUEST, 'Email already taken'));
   const user = await User.create(req.body);
   const token = generateJWT({ id: user._id });
+
+  const bookmarkList = await BookmarkList.create({ userId: user._id });
+
   return res.status(httpStatus.CREATED).send({
     status: 'success',
     token,
