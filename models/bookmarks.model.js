@@ -3,22 +3,24 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const bookmarkSchema = new mongoose.Schema(
   {
-    userId: {
-      type: ObjectId,
-      ref: 'User',
-      required: [true, 'userId required'],
+    _id: {
+      followerUserId: {
+        type: ObjectId,
+        ref: 'User',
+        required: [true, 'userId required'],
+      },
+      followedCardId: {
+        type: ObjectId,
+        ref: 'Card',
+        required: [true, 'cardId required'],
+      },
     },
-
-    groupId: {
+    followerGroupId: {
       type: ObjectId,
       ref: 'BookmarkList.group',
       required: [true, 'userId required'],
     },
-    cardId: {
-      type: ObjectId,
-      ref: 'Card',
-      required: [true, 'cardId required'],
-    },
+
     isPinned: {
       type: Boolean,
       default: false,

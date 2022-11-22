@@ -9,6 +9,7 @@ const swaggerDocs = require('./utils/swagger');
 const uploadRouter = require('./routes/upload.route');
 const userRouter = require('./routes/users.route');
 const portfolioRouter = require('./routes/portfolio.route');
+const bookmarkListRouter = require('./routes/bookmark-list.route');
 // const authRouter = require('./routes/auth.route');
 
 require('./connections/mongodb');
@@ -27,6 +28,7 @@ app.use(cors());
 app.use('/api/users', userRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/portfolio', portfolioRouter);
+app.use('/api/bookmark-list', bookmarkListRouter);
 
 swaggerDocs(app);
 

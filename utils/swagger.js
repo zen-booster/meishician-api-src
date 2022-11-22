@@ -31,7 +31,7 @@ const swaggerSpec = swaggerJsdoc(options);
 
 function swaggerDocs(app) {
   // Swagger page
-  console.log(swaggerSpec);
+  // console.log(swaggerSpec);
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
   // Docs in JSON format
