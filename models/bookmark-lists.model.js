@@ -1,4 +1,3 @@
-const { number } = require('joi');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -24,7 +23,7 @@ const bookmarkListSchema = new mongoose.Schema(
       dropDups: true,
     },
 
-    // 群組排序由arr順序決定
+    // 群組排序由order順序決定
     group: {
       type: [groupSchema],
       default: [{ name: '預設', order: 0, isDefaultGroup: true }],
