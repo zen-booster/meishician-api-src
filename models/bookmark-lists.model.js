@@ -29,13 +29,8 @@ const bookmarkListSchema = new mongoose.Schema(
       type: [groupSchema],
       default: [{ name: '預設', order: 0, isDefaultGroup: true }],
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      select: false,
-    },
   },
-  { strictQuery: false }
+  { strictQuery: false, timestamps: true }
 );
 
 const BookmarkList = mongoose.model('BookmarkList', bookmarkListSchema);

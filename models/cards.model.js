@@ -53,11 +53,6 @@ const cardSchema = new mongoose.Schema(
 
     isPublished: { type: Boolean, default: false },
     thumbnail: String,
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      select: false,
-    },
 
     layoutDirection: {
       type: String,
@@ -65,7 +60,7 @@ const cardSchema = new mongoose.Schema(
       enum: ['horizontal', 'vertical'],
     },
   },
-  { strictQuery: false }
+  { strictQuery: false, timestamps: true }
 );
 
 const Card = mongoose.model('Card', cardSchema);

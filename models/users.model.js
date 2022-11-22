@@ -39,16 +39,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true],
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      select: false,
-      // find的時候不顯示
-      // get: formatDateTime,
-    },
+
     avatar: String,
   },
-  { strictQuery: false }
+  { strictQuery: false, timestamps: true }
 );
 
 userSchema.methods.isPasswordMatch = async function (password) {

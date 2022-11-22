@@ -30,6 +30,13 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
  *     summary: 取得個人名片所有卡片
  *     tags:
  *      - 個人名片
+ *     parameters:
+ *       - in: query
+ *         name: isPublished
+ *         default: true
+ *         schema:
+ *           type: boolean
+ *         description: 篩選個人名片
  *     responses:
  *       200:
  *         description: Returns a mysterious string.
@@ -44,7 +51,7 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
  *                  data:
  *                    type: object
  *                    properties:
- *                      cardInfoArr:
+ *                      records:
  *                        type: array
  *                        items:
  *                          type: object
@@ -181,6 +188,7 @@ router.patch(
  *         schema:
  *           type: string
  *         description: The card ID
+ *
  *     responses:
  *       200:
  *         description: 發佈成功

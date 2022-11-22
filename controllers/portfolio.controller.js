@@ -10,8 +10,11 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
 
 const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
   const userId = req.user._id;
+  let { isPublished } = req.query;
+  isPublished = isPublished ? isPublished : true;
+
   const cardArr = await Card.find({
-    $and: [{ userId }, { isPublished: true }],
+    $and: [{ userId }, { isPublished }],
   }).lean();
 
   const cardInfoArr = cardArr.map((ele) => {
@@ -22,6 +25,7 @@ const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
       jobTitle: jobInfo?.jobTitle?.content,
       cardId,
       canvasId,
+      up,
     };
   });
 
@@ -30,7 +34,7 @@ const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
   return res.status(httpStatus.CREATED).send({
     status: 'success',
     data: {
-      cardInfoArr,
+      records: cardInfoArr,
     },
   });
 });
