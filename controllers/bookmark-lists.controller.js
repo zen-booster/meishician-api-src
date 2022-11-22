@@ -1,5 +1,6 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
+const _ = require('lodash');
 
 const { User, Bookmark, BookmarkList, Card } = require('../models');
 const { generateJWT } = require('../services/auth');
@@ -33,9 +34,9 @@ const addBookmark = handleErrorAsync(async (req, res, next) => {
     return res.status(httpStatus.CREATED).send({
       status: 'success',
       data: {
-        userId: newBookmark._id.followerUserId,
-        groupId: newBookmark.followerGroupId,
-        cardId: newBookmark._id.followedCardId,
+        followerUserId: newBookmark._id.followerUserId,
+        followerGroupId: newBookmark.followerGroupId,
+        followedCardId: newBookmark._id.followedCardId,
       },
     });
   } catch (err) {
@@ -70,4 +71,98 @@ const removeBookmark = handleErrorAsync(async (req, res, next) => {
   }
 });
 
-module.exports = { addBookmark, removeBookmark };
+const pinBookmark = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { cardId } = req.params;
+
+  const card = await Card.findById(cardId).exec();
+
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  }
+
+  const updatedBookmark = await Bookmark.findOneAndUpdate(
+    {
+      '_id.followerUserId': userId,
+      '_id.followedCardId': cardId,
+    },
+    { isPinned: true },
+    { new: true }
+  );
+
+  if (updatedBookmark) {
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+    });
+  } else {
+    next(new AppError(400, 'Update failed'));
+  }
+});
+
+const unpinBookmark = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { cardId } = req.params;
+
+  const card = await Card.findById(cardId).exec();
+
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  }
+
+  const updatedBookmark = await Bookmark.findOneAndUpdate(
+    {
+      '_id.followerUserId': userId,
+      '_id.followedCardId': cardId,
+    },
+    { isPinned: false },
+    { new: true }
+  );
+
+  if (updatedBookmark) {
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+    });
+  } else {
+    next(new AppError(400, 'Update failed'));
+  }
+});
+
+const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { cardId } = req.params;
+  const updateData = _.pickBy(req.body, _.identity);
+
+  const card = await Card.findById(cardId).exec();
+
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  }
+
+  const updatedBookmark = await Bookmark.findOneAndUpdate(
+    {
+      '_id.followerUserId': userId,
+      '_id.followedCardId': cardId,
+    },
+    { $set: updateData },
+    { new: true }
+  );
+
+  console.log(updateData);
+  console.log(updatedBookmark);
+
+  if (updatedBookmark) {
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+    });
+  } else {
+    next(new AppError(400, 'Update failed'));
+  }
+});
+
+module.exports = {
+  addBookmark,
+  removeBookmark,
+  pinBookmark,
+  unpinBookmark,
+  editBookmarkNote,
+};
