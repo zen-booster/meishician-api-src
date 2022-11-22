@@ -68,8 +68,34 @@ const createNewCard = handleErrorAsync(async (req, res, next, err) => {
   });
 });
 
-const publishCard = handleErrorAsync(async (req, res, next, err) => {
+const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   const canvasData = req.body.canvasData;
+  const { cardId } = req.params;
+
+  const card = await Card.findById(cardId).exec();
+
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  }
+  const canvasId = card.canvasId;
+
+  const canvas = await Canvas.findByIdAndUpdate(
+    canvasId,
+    { canvasData },
+    { new: true }
+  );
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      cardId,
+      canvasId,
+      canvasData: canvas.canvasData,
+    },
+  });
+});
+
+const publishCard = handleErrorAsync(async (req, res, next, err) => {
   const { cardId } = req.params;
 
   const card = await Card.findByIdAndUpdate(
@@ -88,8 +114,7 @@ const publishCard = handleErrorAsync(async (req, res, next, err) => {
     data: {
       cardId,
       canvasId,
-      canvasData,
     },
   });
 });
-module.exports = { getPortfolio, createNewCard, publishCard };
+module.exports = { getPortfolio, createNewCard, publishCard, saveCardCanvas };

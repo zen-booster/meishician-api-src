@@ -165,7 +165,7 @@ router.patch(
   '/:cardId/canvas',
   isAuth,
   validate(portfolioValidation.saveCardCanvas),
-  portfolioController.publishCard
+  portfolioController.saveCardCanvas
 );
 
 /* --------------------
