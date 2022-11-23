@@ -52,7 +52,11 @@ const cardSchema = new mongoose.Schema(
     ],
 
     isPublished: { type: Boolean, default: false },
-    thumbnail: String,
+
+    cardImageData: {
+      front: String,
+      back: String,
+    },
 
     layoutDirection: {
       type: String,

@@ -91,8 +91,10 @@ const getCardCanvas = handleErrorAsync(async (req, res, next, err) => {
 });
 
 const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
-  const canvasData = req.body.canvasData;
+  const { canvasData, cardImageData } = req.body;
   const { cardId } = req.params;
+
+  console.log(canvasData, cardImageData);
 
   const card = await Card.findById(cardId).exec();
 
@@ -101,7 +103,13 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   }
   const canvasId = card.canvasId;
 
-  const canvas = await Canvas.findByIdAndUpdate(
+  const updatedCard = await Card.findByIdAndUpdate(
+    cardId,
+    { cardImageData },
+    { new: true }
+  );
+
+  const updatedCanvas = await Canvas.findByIdAndUpdate(
     canvasId,
     { canvasData },
     { new: true }
@@ -112,7 +120,7 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
     data: {
       cardId,
       canvasId,
-      canvasData: canvas.canvasData,
+      canvasData: updatedCanvas.canvasData,
     },
   });
 });

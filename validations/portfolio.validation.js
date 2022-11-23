@@ -140,7 +140,22 @@ const createNewCard = {
  *      properties:
  *        canvasData:
  *          required: true
- *          type: string
+ *          type: object
+ *          properties:
+ *            front:
+ *              type: string
+ *            back:
+ *              type: string
+ *            position:
+ *              type: string
+ *        cardImageData:
+ *          required: true
+ *          type: object
+ *          properties:
+ *            front:
+ *              type: string
+ *            back:
+ *              type: string
  *      additionalProperties: false
  */
 const saveCardCanvas = {
@@ -148,7 +163,21 @@ const saveCardCanvas = {
     cardId: Joi.string().required().custom(objectID),
   }),
   body: Joi.object().keys({
-    canvasData: Joi.string().required(),
+    canvasData: Joi.object()
+      .keys({
+        front: Joi.string().required(),
+        back: Joi.string().required(),
+        position: Joi.string().required(),
+      })
+      .required()
+      .min(1),
+    cardImageData: Joi.object()
+      .keys({
+        front: Joi.string().required(),
+        back: Joi.string().required(),
+      })
+      .required()
+      .min(1),
   }),
 };
 
