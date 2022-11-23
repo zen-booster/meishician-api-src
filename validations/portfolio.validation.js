@@ -1,6 +1,6 @@
 const { string } = require('joi');
 const Joi = require('joi');
-
+const { objectID } = require('./custom.validation');
 //Joi.object().keys({})
 
 /* --------------------
@@ -144,12 +144,22 @@ const createNewCard = {
  *      additionalProperties: false
  */
 const saveCardCanvas = {
+  params: Joi.object().keys({
+    cardId: Joi.string().required().custom(objectID),
+  }),
   body: Joi.object().keys({
     canvasData: Joi.string().required(),
+  }),
+};
+
+const getCardCanvas = {
+  params: Joi.object().keys({
+    cardId: Joi.string().required().custom(objectID),
   }),
 };
 
 module.exports = {
   createNewCard,
   saveCardCanvas,
+  getCardCanvas,
 };

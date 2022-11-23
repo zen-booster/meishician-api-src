@@ -120,6 +120,40 @@ router.post(
 /**
  * @openapi
  * /api/portfolio/{cardId}/canvas:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 獲取卡片canvas
+ *     summary: 獲取卡片canvas
+ *     tags:
+ *      - 個人名片
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *     responses:
+ *       200:
+ *         description: 獲取成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      cardId:
+ *                        type: string
+ *                      canvasId:
+ *                        type: string
+ *                      canvasData:
+ *                        type: string
  *   patch:
  *     security:
  *       - bearerAuth: []
@@ -161,6 +195,8 @@ router.post(
  *                      canvasData:
  *                        type: string
  */
+
+router.get('/:cardId/canvas', isAuth, portfolioController.getCardCanvas);
 router.patch(
   '/:cardId/canvas',
   isAuth,
