@@ -188,14 +188,13 @@ const createBookmarkList = handleErrorAsync(async (req, res, next) => {
       },
     },
   ]);
-  groupCount = groupCount[0].totalCount;
+  // groupCount = groupCount[0].totalCount;
 
   const bookmarkList = await BookmarkList.findOneAndUpdate(
     { userId },
-    { $push: { group: { name: groupName, order: groupCount + 1 } } },
+    { $push: { group: { name: groupName } } },
     { new: true }
   );
-  console.log(bookmarkList);
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
