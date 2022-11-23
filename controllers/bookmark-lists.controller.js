@@ -2,10 +2,13 @@ const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 
+const mongoose = require('mongoose');
 const { User, Bookmark, BookmarkList, Card } = require('../models');
 const { generateJWT } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
+
+const ObjectId = mongoose.Types.ObjectId;
 
 const addBookmark = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
@@ -147,9 +150,6 @@ const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
     { new: true }
   );
 
-  console.log(updateData);
-  console.log(updatedBookmark);
-
   if (updatedBookmark) {
     return res.status(httpStatus.OK).send({
       status: 'success',
@@ -159,10 +159,57 @@ const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
   }
 });
 
+const getBookmarkList = handleErrorAsync(async (req, res, next) => {
+  // TODO: 新增篩選query string
+  const userId = req.user._id;
+  const bookmarkList = await BookmarkList.findOne({ userId }).lean();
+
+  const groupList = bookmarkList.group;
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: groupList,
+    },
+  });
+});
+
+const createBookmarkList = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { groupName } = req.body;
+
+  let groupCount = await BookmarkList.aggregate([
+    {
+      $match: { userId: ObjectId(userId) },
+    },
+    {
+      $project: {
+        id: 1,
+        totalCount: { $size: '$group' },
+      },
+    },
+  ]);
+  groupCount = groupCount[0].totalCount;
+
+  const bookmarkList = await BookmarkList.findOneAndUpdate(
+    { userId },
+    { $push: { group: { name: groupName, order: groupCount + 1 } } },
+    { new: true }
+  );
+  console.log(bookmarkList);
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: bookmarkList.group,
+    },
+  });
+});
+
 module.exports = {
   addBookmark,
   removeBookmark,
   pinBookmark,
   unpinBookmark,
   editBookmarkNote,
+  getBookmarkList,
+  createBookmarkList,
 };

@@ -39,4 +39,26 @@ const editBookmarkNote = {
     .min(1),
 };
 
-module.exports = { checkCardId, editBookmarkNote };
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    createBookmarkList:
+ *      type: object
+ *      properties:
+ *        groupName:
+ *          type: string
+ *      additionalProperties: false
+ */
+
+const createBookmarkList = {
+  body: Joi.object().keys({
+    groupName: Joi.string().required(),
+  }),
+};
+
+module.exports = {
+  checkCardId,
+  editBookmarkNote,
+  createBookmarkList,
+};

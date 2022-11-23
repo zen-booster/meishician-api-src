@@ -221,4 +221,96 @@ router.patch(
   bookmarkListController.editBookmarkNote
 );
 
+/**
+ * @openapi
+ * /api/bookmark-list/groups:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 取得群組列表
+ *     summary: 取得群組列表
+ *     tags:
+ *      - 名片管理
+ *     responses:
+ *       200:
+ *         description: 取得成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            id:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            isDefaultGroup:
+ *                              type: boolean
+ *                              example: false
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 新增群組
+ *     summary: 新增群組
+ *     tags:
+ *      - 名片管理
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/createBookmarkList'
+ *     responses:
+ *       200:
+ *         description: 新增成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            id:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            isDefaultGroup:
+ *                              type: boolean
+ *                              example: false
+ */
+
+/* --------------------
+---取得群組列表
+----------------------*/
+router.get('/groups', isAuth, bookmarkListController.getBookmarkList);
+
+/* --------------------
+---新增群組
+----------------------*/
+router.post(
+  '/groups',
+  isAuth,
+  validate(bookmarkListValidation.createBookmarkList),
+  bookmarkListController.createBookmarkList
+);
+
 module.exports = router;
