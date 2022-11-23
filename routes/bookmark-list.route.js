@@ -33,7 +33,7 @@ const router = express.Router();
  *     parameters:
  *       - in: path
  *         name: cardId
- *         default: true
+ *         required: true
  *         schema:
  *           type: string
  *         description: The card ID
@@ -81,7 +81,7 @@ router.post(
  *     parameters:
  *       - in: path
  *         name: cardId
- *         default: true
+ *         required: true
  *         schema:
  *           type: string
  *         description: The card ID
@@ -120,7 +120,7 @@ router.delete(
  *     parameters:
  *       - in: path
  *         name: cardId
- *         default: true
+ *         required: true
  *         schema:
  *           type: string
  *         description: The card ID
@@ -145,7 +145,7 @@ router.delete(
  *     parameters:
  *       - in: path
  *         name: cardId
- *         default: true
+ *         required: true
  *         schema:
  *           type: string
  *         description: The card ID
@@ -192,7 +192,7 @@ router.delete(
  *     parameters:
  *       - in: path
  *         name: cardId
- *         default: true
+ *         required: true
  *         schema:
  *           type: string
  *         description: The card ID
@@ -311,6 +311,57 @@ router.post(
   isAuth,
   validate(bookmarkListValidation.createBookmarkList),
   bookmarkListController.createBookmarkList
+);
+
+/**
+ * @openapi
+ * /api/bookmark-list/groups/{followerGroupId}:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 刪除群組，若刪除預設群組將不生效
+ *     summary: 刪除群組
+ *     tags:
+ *      - 名片管理
+ *     parameters:
+ *       - in: path
+ *         name: followerGroupId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The group ID
+ *     responses:
+ *       200:
+ *         description: 刪除成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            id:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            isDefaultGroup:
+ *                              type: boolean
+ *                              example: false
+ */
+router.delete(
+  '/groups/:followerGroupId',
+  isAuth,
+  validate(bookmarkListValidation.deleteBookmarkList),
+  bookmarkListController.deleteBookmarkList
 );
 
 module.exports = router;

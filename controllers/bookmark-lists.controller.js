@@ -177,17 +177,17 @@ const createBookmarkList = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { groupName } = req.body;
 
-  let groupCount = await BookmarkList.aggregate([
-    {
-      $match: { userId: ObjectId(userId) },
-    },
-    {
-      $project: {
-        id: 1,
-        totalCount: { $size: '$group' },
-      },
-    },
-  ]);
+  // let groupCount = await BookmarkList.aggregate([
+  //   {
+  //     $match: { userId: ObjectId(userId) },
+  //   },
+  //   {
+  //     $project: {
+  //       id: 1,
+  //       totalCount: { $size: '$group' },
+  //     },
+  //   },
+  // ]);
   // groupCount = groupCount[0].totalCount;
 
   const bookmarkList = await BookmarkList.findOneAndUpdate(
@@ -203,6 +203,60 @@ const createBookmarkList = handleErrorAsync(async (req, res, next) => {
   });
 });
 
+const deleteBookmarkList = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { followerGroupId } = req.params;
+
+  let defaultGroupId = await BookmarkList.aggregate([
+    {
+      $match: {
+        userId: ObjectId(userId),
+      },
+    },
+    { $unwind: '$group' },
+    {
+      $match: {
+        'group.isDefaultGroup': true,
+      },
+    },
+
+    {
+      $project: {
+        _id: '$group._id',
+        name: '$group.name',
+      },
+    },
+  ]);
+
+  defaultGroupId = defaultGroupId[0];
+
+  const updatedBookmarks = await Bookmark.updateMany(
+    { followerGroupId: followerGroupId },
+    { followerGroupId: defaultGroupId._id },
+    { new: true }
+  );
+
+  const updatedBookmarkList = await BookmarkList.findOneAndUpdate(
+    { userId },
+    {
+      $pull: {
+        group: {
+          _id: followerGroupId,
+          isDefaultGroup: false,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: updatedBookmarkList.group,
+    },
+  });
+});
+
 module.exports = {
   addBookmark,
   removeBookmark,
@@ -211,4 +265,5 @@ module.exports = {
   editBookmarkNote,
   getBookmarkList,
   createBookmarkList,
+  deleteBookmarkList,
 };

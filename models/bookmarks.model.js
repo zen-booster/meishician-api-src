@@ -18,7 +18,7 @@ const bookmarkSchema = new mongoose.Schema(
     followerGroupId: {
       type: ObjectId,
       ref: 'BookmarkList.group',
-      required: [true, 'userId required'],
+      required: [true, 'groupId required'],
     },
 
     isPinned: {

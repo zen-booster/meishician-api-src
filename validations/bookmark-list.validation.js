@@ -27,7 +27,7 @@ const checkCardId = {
 
 const editBookmarkNote = {
   params: Joi.object().keys({
-    cardId: Joi.string().required().custom(objectID),
+    cardId: Joi.string().required().custom(objectID).required(),
   }),
   body: Joi.object()
     .keys({
@@ -57,8 +57,15 @@ const createBookmarkList = {
   }),
 };
 
+const deleteBookmarkList = {
+  params: Joi.object().keys({
+    followerGroupId: Joi.string().required().custom(objectID).required(),
+  }),
+};
+
 module.exports = {
   checkCardId,
   editBookmarkNote,
   createBookmarkList,
+  deleteBookmarkList,
 };
