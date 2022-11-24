@@ -318,12 +318,55 @@ const renameBookmarkList = handleErrorAsync(async (req, res, next) => {
 const getBookmarks = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { followerGroupId } = req.params;
-  const { limit, page, desc } = req.query;
+  const { limit, page } = req.query;
+  let { asc } = req.query;
+  asc = asc ? asc : 'createdAt';
 
   const Bookmarks = await Bookmark.find({ followerGroupId })
+    .populate({
+      path: '_id.followedCardId',
+      populate: {
+        path: 'userId',
+      },
+    })
     .limit(limit)
-    .skip(limit * page)
-    .sort('created_at');
+    .skip(limit * (page - 1))
+    .sort(asc)
+    .select('_id createdAt isPinned');
+
+  const aggBookmarks = Bookmarks.map((ele) => {
+    const orgData = ele._id;
+    const jobInfo = orgData?.followedCardId?.jobInfo;
+    const userData = orgData?.followedCardId?.userId;
+    const cardId = orgData?.followedCardId?._id;
+    let apiResData = {};
+    if (jobInfo) {
+      const [name, companyName, jobTitle] = [
+        'name',
+        'companyName',
+        'jobTitle',
+      ].map((ele) => jobInfo[ele].content);
+      apiResData = { ...apiResData, name, companyName, jobTitle };
+    } else {
+      apiResData = {
+        ...apiResData,
+        name: null,
+        companyName: null,
+        jobTitle: null,
+      };
+    }
+
+    if (userData) {
+      const [avatar] = ['avatar'].map((ele) => jobInfo[ele]);
+      apiResData = { ...apiResData, avatar };
+    } else {
+      apiResData = { ...apiResData, avatar: null };
+    }
+
+    apiResData = { ...apiResData, cardId: cardId ?? null };
+
+    return apiResData;
+  });
 
   const totalCount = await Bookmark.find({ followerGroupId }).count();
 
@@ -331,7 +374,11 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
 
   return res.status(httpStatus.OK).send({
     status: 'success',
-    data: {},
+    data: {
+      totalPage,
+      currentPage: page,
+      records: aggBookmarks,
+    },
   });
 });
 

@@ -64,8 +64,7 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
  *                              type: string
  *                            cardId:
  *                              type: string
- *                            canvasId:
- *                              type: string
+
  */
 router.get('/', isAuth, portfolioController.getPortfolio);
 
@@ -104,8 +103,7 @@ router.get('/', isAuth, portfolioController.getPortfolio);
  *                    properties:
  *                      cardId:
  *                        type: string
- *                      canvasId:
- *                        type: string
+
  */
 router.post(
   '/',
@@ -150,8 +148,6 @@ router.post(
  *                    properties:
  *                      cardId:
  *                        type: string
- *                      canvasId:
- *                        type: string
  *                      canvasData:
  *                        type: string
  *   patch:
@@ -189,8 +185,6 @@ router.post(
  *                    type: object
  *                    properties:
  *                      cardId:
- *                        type: string
- *                      canvasId:
  *                        type: string
  *                      canvasData:
  *                        type: string
@@ -240,8 +234,6 @@ router.patch(
  *                    type: object
  *                    properties:
  *                      cardId:
- *                        type: string
- *                      canvasId:
  *                        type: string
  */
 router.post('/:cardId/publish', isAuth, portfolioController.publishCard);

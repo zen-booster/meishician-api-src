@@ -479,9 +479,74 @@ router.patch(
 /* --------------------
 ---取得群組內卡片
 ----------------------*/
+/**
+ * @openapi
+ * /api/bookmark-list/groups/{followerGroupId}/cards:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 取得群組內卡片列表
+ *     summary: 取得群組內卡片列表
+ *     tags:
+ *      - 名片管理
+ *     parameters:
+ *        - in: query
+ *          name: page
+ *          schema:
+ *            type: integer
+ *          description: 第幾頁
+ *        - in: query
+ *          name: limit
+ *          schema:
+ *            type: integer
+ *          description: 一頁幾筆
+ *        - in: query
+ *          name: asc
+ *          schema:
+ *            type: integer
+ *          description: 排序
+ *        - in: path
+ *          name: followerGroupId
+ *          required: true
+ *          schema:
+ *            type: string
+ *          description: The group ID
+ *     responses:
+ *       200:
+ *         description: 取得成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            cardId:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            companyName:
+ *                              type: string
+ *                            jobTitle:
+ *                              type: string
+ *                            avatar:
+ *                              type: string
+
+ */
+
 router.get(
   '/groups/:followerGroupId/cards',
   isAuth,
+  validate(bookmarkListValidation.getBookmarks),
   bookmarkListController.getBookmarks
 );
 

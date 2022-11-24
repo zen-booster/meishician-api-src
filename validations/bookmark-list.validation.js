@@ -103,6 +103,17 @@ const renameBookmarkList = {
   }),
 };
 
+const getBookmarks = {
+  query: Joi.object().keys({
+    page: Joi.number().default(1),
+    limit: Joi.number().default(10),
+    asc: Joi.string().default('-createdAt'),
+  }),
+  params: Joi.object().keys({
+    followerGroupId: Joi.string().required().custom(objectID).required(),
+  }),
+};
+
 module.exports = {
   checkCardId,
   editBookmarkNote,
@@ -110,4 +121,5 @@ module.exports = {
   deleteBookmarkList,
   updateBookmarkListOrder,
   renameBookmarkList,
+  getBookmarks,
 };
