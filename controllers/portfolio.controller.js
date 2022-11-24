@@ -51,19 +51,13 @@ const createNewCard = handleErrorAsync(async (req, res, next, err) => {
   const card = await Card.create(CardData);
   const cardId = card.id;
 
-  const canvas = await Canvas.create({ cardId });
-  const canvasId = canvas._id;
+  // 以cardId作為_id
+  const canvas = await Canvas.create({ cardId, _id: cardId });
 
-  const updatedCard = await Card.findByIdAndUpdate(
-    cardId,
-    { canvasId: canvasId },
-    { new: true }
-  );
   return res.status(httpStatus.CREATED).send({
     status: 'success',
     data: {
       cardId,
-      canvasId,
     },
   });
 });
@@ -76,15 +70,13 @@ const getCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
   }
-  const canvasId = card.canvasId;
 
-  const canvas = await Canvas.findById({ _id: canvasId });
+  const canvas = await Canvas.findById({ _id: cardId });
 
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
       cardId,
-      canvasId,
       canvasData: canvas.canvasData,
     },
   });
@@ -101,7 +93,6 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
   }
-  const canvasId = card.canvasId;
 
   const updatedCard = await Card.findByIdAndUpdate(
     cardId,
@@ -110,7 +101,7 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   );
 
   const updatedCanvas = await Canvas.findByIdAndUpdate(
-    canvasId,
+    cardId,
     { canvasData },
     { new: true }
   );
@@ -119,7 +110,6 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
     status: 'success',
     data: {
       cardId,
-      canvasId,
       canvasData: updatedCanvas.canvasData,
     },
   });
@@ -137,13 +127,11 @@ const publishCard = handleErrorAsync(async (req, res, next, err) => {
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
   }
-  const canvasId = card.canvasId;
 
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
       cardId,
-      canvasId,
     },
   });
 });

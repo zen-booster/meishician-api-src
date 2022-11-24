@@ -23,11 +23,12 @@ const addBookmark = handleErrorAsync(async (req, res, next) => {
   const bookmarkList = await BookmarkList.findOne({ userId })
     .populate({
       path: 'group',
-      match: { isDefaultGroup: true },
     })
     .exec();
 
-  const defaultGroupID = bookmarkList.group[0]._id;
+  const defaultGroupID = bookmarkList.group.filter(
+    (ele) => ele.isDefaultGroup === true
+  )[0]._id;
 
   try {
     const newBookmark = await Bookmark.create({
@@ -314,6 +315,26 @@ const renameBookmarkList = handleErrorAsync(async (req, res, next) => {
   });
 });
 
+const getBookmarks = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { followerGroupId } = req.params;
+  const { limit, page, desc } = req.query;
+
+  const Bookmarks = await Bookmark.find({ followerGroupId })
+    .limit(limit)
+    .skip(limit * page)
+    .sort('created_at');
+
+  const totalCount = await Bookmark.find({ followerGroupId }).count();
+
+  const totalPage = Math.ceil(totalCount / limit);
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {},
+  });
+});
+
 module.exports = {
   addBookmark,
   removeBookmark,
@@ -325,4 +346,5 @@ module.exports = {
   deleteBookmarkList,
   updateBookmarkListOrder,
   renameBookmarkList,
+  getBookmarks,
 };

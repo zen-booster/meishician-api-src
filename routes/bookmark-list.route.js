@@ -476,4 +476,13 @@ router.patch(
   bookmarkListController.updateBookmarkListOrder
 );
 
+/* --------------------
+---取得群組內卡片
+----------------------*/
+router.get(
+  '/groups/:followerGroupId/cards',
+  isAuth,
+  bookmarkListController.getBookmarks
+);
+
 module.exports = router;

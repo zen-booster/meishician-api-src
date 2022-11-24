@@ -3,6 +3,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const canvasSchema = new mongoose.Schema(
   {
+    _id: { type: ObjectId, ref: 'Card' },
     cardId: { type: ObjectId, ref: 'Card' },
     canvasData: {
       front: String,

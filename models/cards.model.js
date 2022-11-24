@@ -29,7 +29,6 @@ const cardSchema = new mongoose.Schema(
         isPublic: { type: Boolean, default: true },
       },
     },
-    canvasId: { type: ObjectId, ref: 'Canvas' },
     homepageLink: [
       {
         type: {
