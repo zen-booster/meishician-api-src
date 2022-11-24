@@ -10,6 +10,7 @@ const uploadRouter = require('./routes/upload.route');
 const userRouter = require('./routes/users.route');
 const portfolioRouter = require('./routes/portfolio.route');
 const bookmarkListRouter = require('./routes/bookmark-list.route');
+const homepageRouter = require('./routes/homepage.route');
 // const authRouter = require('./routes/auth.route');
 
 require('./connections/mongodb');
@@ -29,6 +30,7 @@ app.use('/api/users', userRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/portfolio', portfolioRouter);
 app.use('/api/bookmark-list', bookmarkListRouter);
+app.use('/api/homepage', homepageRouter);
 
 swaggerDocs(app);
 
