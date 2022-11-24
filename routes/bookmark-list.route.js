@@ -313,6 +313,9 @@ router.post(
   bookmarkListController.createBookmarkList
 );
 
+/* --------------------
+---刪除群組
+----------------------*/
 /**
  * @openapi
  * /api/bookmark-list/groups/{followerGroupId}:
@@ -356,12 +359,121 @@ router.post(
  *                            isDefaultGroup:
  *                              type: boolean
  *                              example: false
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 群組更名
+ *     summary: 群組更名
+ *     tags:
+ *      - 名片管理
+ *     parameters:
+ *       - in: path
+ *         name: followerGroupId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The group ID
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/renameBookmarkList'
+ *     responses:
+ *       200:
+ *         description: 更名成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            id:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            isDefaultGroup:
+ *                              type: boolean
+ *                              example: false
  */
+
 router.delete(
   '/groups/:followerGroupId',
   isAuth,
   validate(bookmarkListValidation.deleteBookmarkList),
   bookmarkListController.deleteBookmarkList
+);
+
+/* --------------------
+---群組更名
+----------------------*/
+router.patch(
+  '/groups/:followerGroupId',
+  isAuth,
+  validate(bookmarkListValidation.renameBookmarkList),
+  bookmarkListController.renameBookmarkList
+);
+/* --------------------
+---群組變更順序
+----------------------*/
+/**
+ * @openapi
+ * /api/bookmark-list/groups/order:
+ *   patch:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 群組順序調整
+ *     summary: 群組順序調整
+ *     tags:
+ *      - 名片管理
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/updateBookmarkListOrder'
+ *     responses:
+ *       200:
+ *         description: 調整成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            id:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            isDefaultGroup:
+ *                              type: boolean
+ *                              example: false
+ */
+router.patch(
+  '/groups/order',
+  isAuth,
+  validate(bookmarkListValidation.updateBookmarkListOrder),
+  bookmarkListController.updateBookmarkListOrder
 );
 
 module.exports = router;

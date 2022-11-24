@@ -63,7 +63,6 @@ const removeBookmark = handleErrorAsync(async (req, res, next) => {
     '_id.followerUserId': userId,
     '_id.followedCardId': cardId,
   });
-  console.log(deletedResult);
 
   if (deletedResult.deletedCount > 0) {
     return res.status(httpStatus.OK).send({
@@ -257,6 +256,64 @@ const deleteBookmarkList = handleErrorAsync(async (req, res, next) => {
   });
 });
 
+const updateBookmarkListOrder = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+
+  const { followerGroupId, newIndex } = req.body;
+  const doc = await BookmarkList.findOne({ userId });
+
+  const oldIndex = doc.group.findIndex((ele) => {
+    console.log(ele._id.toString());
+    return ele._id.toString() === followerGroupId;
+  });
+
+  if (oldIndex === -1) {
+    return next(new AppError(400, 'followerGroupId not found'));
+  }
+  let [oldValue, newValue] = [doc.group[oldIndex], doc.group[newIndex]];
+
+  const groupCount = doc.group.length;
+
+  if (newIndex >= groupCount) {
+    return next(new AppError(400, 'wrong index'));
+  }
+
+  doc.group.set(oldIndex, newValue);
+  doc.group.set(newIndex, oldValue);
+
+  const updatedBookmarkList = await doc.save();
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: updatedBookmarkList.group,
+    },
+  });
+});
+
+const renameBookmarkList = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { followerGroupId } = req.params;
+  const { newGroupName } = req.body;
+
+  const updatedBookmarkList = await BookmarkList.findOneAndUpdate(
+    { userId, 'group._id': ObjectId(followerGroupId) },
+    { $set: { 'group.$.name': newGroupName } },
+    { new: true }
+  ).exec();
+
+  if (updatedBookmarkList === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'Not found'));
+  }
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: updatedBookmarkList.group,
+    },
+  });
+});
+
 module.exports = {
   addBookmark,
   removeBookmark,
@@ -266,4 +323,6 @@ module.exports = {
   getBookmarkList,
   createBookmarkList,
   deleteBookmarkList,
+  updateBookmarkListOrder,
+  renameBookmarkList,
 };

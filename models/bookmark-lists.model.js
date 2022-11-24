@@ -28,6 +28,11 @@ const bookmarkListSchema = new mongoose.Schema(
   { strictQuery: false, timestamps: true }
 );
 
+bookmarkListSchema.pre('save', function (next) {
+  this.group = this.group.filter((group) => group);
+  next();
+});
+
 const BookmarkList = mongoose.model('BookmarkList', bookmarkListSchema);
 
 module.exports = BookmarkList;

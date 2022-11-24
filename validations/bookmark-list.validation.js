@@ -63,9 +63,51 @@ const deleteBookmarkList = {
   }),
 };
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    updateBookmarkListOrder:
+ *      type: object
+ *      properties:
+ *        followerGroupId:
+ *          type: string
+ *        newIndex:
+ *          type: integer
+ *      additionalProperties: false
+ */
+const updateBookmarkListOrder = {
+  body: Joi.object().keys({
+    followerGroupId: Joi.string().required().custom(objectID).required(),
+    newIndex: Joi.number().required(),
+  }),
+};
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    renameBookmarkList:
+ *      type: object
+ *      properties:
+ *        newGroupName:
+ *          type: string
+ *      additionalProperties: false
+ */
+const renameBookmarkList = {
+  params: Joi.object().keys({
+    followerGroupId: Joi.string().required().custom(objectID).required(),
+  }),
+  body: Joi.object().keys({
+    newGroupName: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   checkCardId,
   editBookmarkNote,
   createBookmarkList,
   deleteBookmarkList,
+  updateBookmarkListOrder,
+  renameBookmarkList,
 };
