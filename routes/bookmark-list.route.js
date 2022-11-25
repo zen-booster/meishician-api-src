@@ -60,7 +60,7 @@ const router = express.Router();
  */
 router.post(
   '/cards/:cardId',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.checkCardId),
   bookmarkListController.addBookmark
 );
@@ -99,7 +99,7 @@ router.post(
  */
 router.delete(
   '/cards/:cardId',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.checkCardId),
   bookmarkListController.removeBookmark
 );
@@ -164,14 +164,14 @@ router.delete(
 
 router.post(
   '/cards/:cardId/pin',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.checkCardId),
   bookmarkListController.pinBookmark
 );
 
 router.delete(
   '/cards/:cardId/pin',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.checkCardId),
   bookmarkListController.unpinBookmark
 );
@@ -216,7 +216,7 @@ router.delete(
  */
 router.patch(
   '/cards/:cardId/notes',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.editBookmarkNote),
   bookmarkListController.editBookmarkNote
 );
@@ -301,14 +301,14 @@ router.patch(
 /* --------------------
 ---取得群組列表
 ----------------------*/
-router.get('/groups', isAuth, bookmarkListController.getBookmarkList);
+router.get('/groups', isAuth(), bookmarkListController.getBookmarkList);
 
 /* --------------------
 ---新增群組
 ----------------------*/
 router.post(
   '/groups',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.createBookmarkList),
   bookmarkListController.createBookmarkList
 );
@@ -409,7 +409,7 @@ router.post(
 
 router.delete(
   '/groups/:followerGroupId',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.deleteBookmarkList),
   bookmarkListController.deleteBookmarkList
 );
@@ -419,7 +419,7 @@ router.delete(
 ----------------------*/
 router.patch(
   '/groups/:followerGroupId',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.renameBookmarkList),
   bookmarkListController.renameBookmarkList
 );
@@ -471,7 +471,7 @@ router.patch(
  */
 router.patch(
   '/groups/order',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.updateBookmarkListOrder),
   bookmarkListController.updateBookmarkListOrder
 );
@@ -545,7 +545,7 @@ router.patch(
 
 router.get(
   '/groups/:followerGroupId/cards',
-  isAuth,
+  isAuth(),
   validate(bookmarkListValidation.getBookmarks),
   bookmarkListController.getBookmarks
 );

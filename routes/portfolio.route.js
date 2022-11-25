@@ -66,7 +66,7 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
  *                              type: string
 
  */
-router.get('/', isAuth, portfolioController.getPortfolio);
+router.get('/', isAuth(), portfolioController.getPortfolio);
 
 /* --------------------
 ---新增卡片
@@ -107,7 +107,7 @@ router.get('/', isAuth, portfolioController.getPortfolio);
  */
 router.post(
   '/',
-  isAuth,
+  isAuth(),
   validate(portfolioValidation.createNewCard),
   portfolioController.createNewCard
 );
@@ -190,10 +190,10 @@ router.post(
  *                        type: string
  */
 
-router.get('/:cardId/canvas', isAuth, portfolioController.getCardCanvas);
+router.get('/:cardId/canvas', isAuth(), portfolioController.getCardCanvas);
 router.patch(
   '/:cardId/canvas',
-  isAuth,
+  isAuth(),
   validate(portfolioValidation.saveCardCanvas),
   portfolioController.saveCardCanvas
 );
@@ -236,6 +236,6 @@ router.patch(
  *                      cardId:
  *                        type: string
  */
-router.post('/:cardId/publish', isAuth, portfolioController.publishCard);
+router.post('/:cardId/publish', isAuth(), portfolioController.publishCard);
 
 module.exports = router;

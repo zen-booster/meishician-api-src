@@ -5,11 +5,14 @@ const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
 const { User } = require('../models');
 
-const isAuth = handleErrorAsync(
-  async (req, res, next) => {
+const isAuth = (isBypass = false) =>
+  handleErrorAsync(async (req, res, next) => {
     let token = req.headers.authorization;
+
     if (!token || !token.startsWith('Bearer')) {
-      return next(new AppError(httpStatus.UNAUTHORIZED, '尚未登入'));
+      return next(
+        !isBypass && new AppError(httpStatus.UNAUTHORIZED, '尚未登入')
+      );
     }
 
     [, token] = token.split(' ');
@@ -27,12 +30,13 @@ const isAuth = handleErrorAsync(
     const currentUser = await User.findById(decodedPayload.id);
 
     if (currentUser === null) {
-      return next(new AppError(httpStatus.NOT_FOUND, '找不到此用戶'));
+      return next(
+        !isBypass && new AppError(httpStatus.NOT_FOUND, '找不到此用戶')
+      );
     }
     req.user = currentUser;
     return next();
-  },
-);
+  });
 
 const generateJWT = (payload) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, {

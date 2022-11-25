@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post(
   '/image',
-  isAuth,
+  isAuth(),
   upload,
   handleErrorAsync(async (req, res, next, err) => {
     if (!req.files.length) {

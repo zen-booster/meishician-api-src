@@ -53,7 +53,7 @@ const router = express.Router();
  */
 router.get(
   '/check',
-  isAuth,
+  isAuth(),
   handleErrorAsync(async (req, res) =>
     res.status(200).json({
       status: 'success',
@@ -240,7 +240,7 @@ router.put(
  */
 router.patch(
   '/profile',
-  isAuth,
+  isAuth(),
   validate(authValidation.updateProfile),
   authController.updateProfile
 );

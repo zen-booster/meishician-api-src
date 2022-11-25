@@ -29,6 +29,7 @@ const cardSchema = new mongoose.Schema(
         isPublic: { type: Boolean, default: true },
       },
     },
+    homepageTitle: String,
     homepageLink: [
       {
         type: {
@@ -45,7 +46,7 @@ const cardSchema = new mongoose.Schema(
         },
         title: { type: String, required: true },
         subTitle: { type: String, required: true },
-        url: { type: String, required: true },
+        link: { type: String, required: true },
         icon: { type: String, required: true },
       },
     ],
