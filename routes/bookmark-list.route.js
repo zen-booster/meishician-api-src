@@ -359,6 +359,7 @@ router.post(
  *                            isDefaultGroup:
  *                              type: boolean
  *                              example: false
+ * /api/bookmark-list/groups/{followerGroupId}/name:
  *   patch:
  *     security:
  *       - bearerAuth: []
@@ -408,7 +409,7 @@ router.post(
  */
 
 router.delete(
-  '/groups/:followerGroupId',
+  '/groups/:followerGroupId/name',
   isAuth(),
   validate(bookmarkListValidation.deleteBookmarkList),
   bookmarkListController.deleteBookmarkList
@@ -540,7 +541,6 @@ router.patch(
  *                              type: string
  *                            avatar:
  *                              type: string
-
  */
 
 router.get(

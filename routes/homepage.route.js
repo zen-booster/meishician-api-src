@@ -128,19 +128,15 @@ router.put(
   homepageController.renameHomepageTitle
 );
 
-router.post(
-  '/:cardId/link',
-  isAuth(),
-  validate(homepageValidation.addLink),
-  homepageController.addLink
-);
-
+/* --------------------
+---新增資訊連結
+----------------------*/
 /**
  * @openapi
- * /api/homepage/{cardId}/{linkId}:
- *   deletes:
- *     description: 獲取名片頁面資訊
- *     summary: 獲取名片頁面資訊
+ * /api/homepage/{cardId}/link:
+ *   post:
+ *     description: 新增名片頁面資訊連結
+ *     summary: 新增名片頁面資訊連結
  *     tags:
  *      - 名片資訊頁面
  *     parameters:
@@ -150,15 +146,15 @@ router.post(
  *         schema:
  *           type: string
  *         description: The card ID
- *       - in: path
- *         name: linkId
- *         required: true
- *         schema:
- *           type: string
- *         description: The linkId ID
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/addLink'
  *     responses:
  *       200:
- *         description: 獲取成功
+ *         description: 新增成功
  *         content:
  *          application/json:
  *              schema:
@@ -183,11 +179,193 @@ router.post(
  *                      isAuthor:
  *                        type: boolean
  */
+
+router.post(
+  '/:cardId/link',
+  isAuth(),
+  validate(homepageValidation.addLink),
+  homepageController.addLink
+);
+
+/* --------------------
+---刪除連結
+----------------------*/
+/**
+ * @openapi
+ * /api/homepage/{cardId}/link/{linkId}:
+ *   delete:
+ *     description: 刪除名片頁面資訊連結
+ *     summary: 刪除名片頁面資訊連結
+ *     tags:
+ *      - 名片資訊頁面
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *       - in: path
+ *         name: linkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The link ID
+ *     responses:
+ *       200:
+ *         description: 新增成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: 'success'
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      jobInfo:
+ *                        type: object
+ *                      cardId:
+ *                        type: string
+ *                      layoutDirection:
+ *                        type: string
+ *                      homepageLink:
+ *                        type: array
+ *                        items:
+ *                          type: object
+ *                      isAuthor:
+ *                        type: boolean
+ */
+
 router.delete(
   '/:cardId/link/:linkId',
   isAuth(),
-  //validate(homepageValidation.),
+  validate(homepageValidation.deleteLink),
   homepageController.deleteLink
+);
+
+/**
+ * @openapi
+ * /api/homepage/{cardId}/link/{linkId}:
+ *   patch:
+ *     description: 修改名片頁面資訊連結
+ *     summary: 修改名片頁面資訊連結
+ *     tags:
+ *      - 名片資訊頁面
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *       - in: path
+ *         name: linkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The link ID
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/editLink'
+ *     responses:
+ *       200:
+ *         description: 修改成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: 'success'
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      jobInfo:
+ *                        type: object
+ *                      cardId:
+ *                        type: string
+ *                      layoutDirection:
+ *                        type: string
+ *                      homepageLink:
+ *                        type: array
+ *                        items:
+ *                          type: object
+ *                      isAuthor:
+ *                        type: boolean
+ */
+router.patch(
+  '/:cardId/link/:linkId',
+  isAuth(),
+  validate(homepageValidation.editLink),
+  homepageController.editLink
+);
+
+/**
+ * @openapi
+ * /api/homepage/{cardId}/link/{linkId}/order:
+ *   patch:
+ *     description: 修改名片頁面資訊連結順序
+ *     summary: 修改名片頁面資訊連結順序
+ *     tags:
+ *      - 名片資訊頁面
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *       - in: path
+ *         name: linkId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The link ID
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/updateLinkOrder'
+ *     responses:
+ *       200:
+ *         description: 修改成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: 'success'
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      jobInfo:
+ *                        type: object
+ *                      cardId:
+ *                        type: string
+ *                      layoutDirection:
+ *                        type: string
+ *                      homepageLink:
+ *                        type: array
+ *                        items:
+ *                          type: object
+ *                      isAuthor:
+ *                        type: boolean
+ */
+router.patch(
+  '/:cardId/link/:linkId/order',
+  isAuth(),
+  validate(homepageValidation.updateLinkOrder),
+  homepageController.updateLinkOrder
 );
 
 module.exports = router;

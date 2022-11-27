@@ -264,7 +264,6 @@ const updateBookmarkListOrder = handleErrorAsync(async (req, res, next) => {
   const doc = await BookmarkList.findOne({ userId });
 
   const oldIndex = doc.group.findIndex((ele) => {
-    console.log(ele._id.toString());
     return ele._id.toString() === followerGroupId;
   });
 

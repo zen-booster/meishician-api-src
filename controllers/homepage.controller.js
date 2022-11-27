@@ -127,7 +127,6 @@ const deleteLink = handleErrorAsync(async (req, res, next) => {
     { new: true }
   );
 
-  return res.status(httpStatus.OK).send();
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
   } else {
@@ -144,4 +143,79 @@ const deleteLink = handleErrorAsync(async (req, res, next) => {
   }
 });
 
-module.exports = { renameHomepageTitle, getHomepageInfo, addLink, deleteLink };
+const editLink = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { cardId, linkId } = req.params;
+
+  const card = await Card.findOne({ _id: cardId, userId });
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  } else {
+    const newOne = {
+      ...card.homepageLink.id(linkId).toObject(),
+      ...req.body,
+    };
+    card.homepageLink.id(linkId).set(newOne);
+    card.save({ validateBeforeSave: false });
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+      data: {
+        jobInfo: card.jobInfo,
+        cardId: card._id,
+        layoutDirection: card.layoutDirection,
+        homepageLink: card.homepageLink,
+        isAuthor: true,
+      },
+    });
+  }
+});
+
+const updateLinkOrder = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { cardId, linkId } = req.params;
+  const { newIndex } = req.body;
+  const card = await Card.findOne({ _id: cardId, userId });
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  } else {
+    const oldIndex = card.homepageLink.findIndex((ele) => {
+      return ele._id.toString() === linkId;
+    });
+
+    if (oldIndex === -1) {
+      return next(new AppError(400, 'linkId not found'));
+    }
+    let [oldValue, newValue] = [
+      card.homepageLink[oldIndex],
+      card.homepageLink[newIndex],
+    ];
+
+    const count = card.homepageLink.length;
+
+    if (newIndex >= count) {
+      return next(new AppError(400, 'wrong index'));
+    }
+
+    card.homepageLink.set(oldIndex, newValue);
+    card.homepageLink.set(newIndex, oldValue);
+    card.save();
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+      data: {
+        jobInfo: card.jobInfo,
+        cardId: card._id,
+        layoutDirection: card.layoutDirection,
+        homepageLink: card.homepageLink,
+        isAuthor: true,
+      },
+    });
+  }
+});
+module.exports = {
+  renameHomepageTitle,
+  getHomepageInfo,
+  addLink,
+  deleteLink,
+  editLink,
+  updateLinkOrder,
+};

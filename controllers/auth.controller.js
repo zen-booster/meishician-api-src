@@ -7,6 +7,8 @@ const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
 
 const signUp = handleErrorAsync(async (req, res, next) => {
+  // #swagger.tags = ['Users']
+  // 這樣會失效
   const { email } = req.body;
   const existedUser = await User.findOne({ email });
   if (existedUser)
