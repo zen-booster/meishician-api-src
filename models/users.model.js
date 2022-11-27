@@ -30,15 +30,15 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
-    safetyQuestion: {
-      type: String,
-      enum: ['Q1_FIRST_PET_NAME', 'Q2_PARENTS_CITY'],
-      required: [true],
-    },
-    safetyAnswer: {
-      type: String,
-      required: [true],
-    },
+    // safetyQuestion: {
+    //   type: String,
+    //   enum: ['Q1_FIRST_PET_NAME', 'Q2_PARENTS_CITY'],
+    //   required: [true],
+    // },
+    // safetyAnswer: {
+    //   type: String,
+    //   required: [true],
+    // },
 
     avatar: String,
   },

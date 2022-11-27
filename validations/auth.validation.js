@@ -3,7 +3,7 @@ const { password } = require('./custom.validation');
 
 const { User } = require('../models');
 
-const safetyQuestionEnum = User.schema.path('safetyQuestion').enumValues;
+// const safetyQuestionEnum = User.schema.path('safetyQuestion').enumValues;
 
 /**
  * @openapi
@@ -50,10 +50,6 @@ const signUp = {
       .equal(Joi.ref('password'))
       .required()
       .messages({ 'any.only': '{{#label}} does not match' }),
-    safetyQuestion: Joi.string()
-      .required()
-      .valid(...safetyQuestionEnum),
-    safetyAnswer: Joi.string().required(),
     avatar: Joi.string().uri(),
   }),
 };
@@ -75,7 +71,6 @@ const signUp = {
  *          type: string
  *          default: stringPassword123
  *      additionalProperties: false
-
  */
 const login = {
   body: Joi.object().keys({
@@ -84,6 +79,24 @@ const login = {
   }),
 };
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    updatePassword:
+ *      type: object
+ *      required:
+ *        - email
+ *        - password
+ *      properties:
+ *        password:
+ *          type: string
+ *          default: stringPassword123
+ *        confirmPassword:
+ *          type: string
+ *          default: stringPassword123
+ *      additionalProperties: false
+ */
 const updatePassword = {
   body: Joi.object().keys({
     password: Joi.string().required().custom(password),
@@ -91,50 +104,6 @@ const updatePassword = {
       .equal(Joi.ref('password'))
       .required()
       .messages({ 'any.only': '{{#label}} does not match' }),
-  }),
-};
-
-/**
- * @openapi
- * components:
- *   schemas:
- *    resetPassword:
- *      type: object
- *      required:
- *        - email
- *        - password
- *        - confirmPassword
- *        - safetyQuestion
- *        - safetyAnswer
- *      properties:
- *        email:
- *          type: string
- *          default: jane.doe@example.com
- *        password:
- *          type: string
- *          default: stringPassword123
- *        confirmPassword:
- *          type: string
- *          default: stringPassword123
- *        safetyQuestion:
- *          type: string
- *          enum: ['Q1_FIRST_PET_NAME', 'Q2_PARENTS_CITY']
- *        safetyAnswer:
- *          type: string
- *      additionalProperties: false
- */
-const resetPassword = {
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
-    confirmPassword: Joi.any()
-      .equal(Joi.ref('password'))
-      .required()
-      .messages({ 'any.only': '{{#label}} does not match' }),
-    safetyQuestion: Joi.string()
-      .required()
-      .valid(...safetyQuestionEnum),
-    safetyAnswer: Joi.string().required(),
   }),
 };
 
@@ -168,6 +137,5 @@ module.exports = {
   signUp,
   login,
   updatePassword,
-  resetPassword,
   updateProfile,
 };

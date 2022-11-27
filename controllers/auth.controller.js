@@ -56,29 +56,18 @@ const login = handleErrorAsync(async (req, res, next) => {
   });
 });
 
-const resetPassword = handleErrorAsync(async (req, res, next) => {
-  const { email, password, safetyQuestion, safetyAnswer } = req.body;
+const updatePassword = handleErrorAsync(
+  // eslint-disable-next-line no-unused-vars
+  async (req, res, next) => {
+    const { password } = req.body;
 
-  const user = await User.findOne({ email }).select(
-    '+safetyAnswer +safetyQuestion'
-  );
+    await User.findByIdAndUpdate({ _id: req.user._id }, { password }).exec();
 
-  if (!user) return next(new AppError(httpStatus.NOT_FOUND, 'User not found'));
-
-  const isSafetyAnswerMatch = await bcrypt.compare(
-    safetyAnswer,
-    user.safetyAnswer
-  );
-  if (user.safetyQuestion !== safetyQuestion || !isSafetyAnswerMatch) {
-    return next(new AppError(httpStatus.BAD_REQUEST, 'Incorrect safety QA'));
+    return res.status(httpStatus.OK).json({
+      status: 'success',
+    });
   }
-
-  await User.findOneAndUpdate({ email }, { password }).exec();
-
-  return res.status(httpStatus.OK).json({
-    status: 'success',
-  });
-});
+);
 
 const updateProfile = handleErrorAsync(async (req, res) => {
   const userID = req.user._id;
@@ -102,6 +91,6 @@ const updateProfile = handleErrorAsync(async (req, res) => {
 module.exports = {
   signUp,
   login,
-  resetPassword,
+  updatePassword,
   updateProfile,
 };

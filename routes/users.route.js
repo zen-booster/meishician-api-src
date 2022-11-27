@@ -155,22 +155,12 @@ router.post('/login', validate(authValidation.login), authController.login);
 /* --------------------
 ---更新密碼
 ----------------------*/
-// router.patch(
-//   '/update-password',
-//   isAuth,
-//   validate(authValidation.updatePassword),
-//   authController.updatePassword
-// );
-
-/* --------------------
----重置密碼
-----------------------*/
 /**
  * @openapi
  * /api/users/password:
  *   put:
- *     description: 重置密碼
- *     summary: 重置密碼
+ *     description: 更新密碼
+ *     summary: 更新密碼
  *     tags:
  *      - 會員驗證
  *     requestBody:
@@ -178,10 +168,10 @@ router.post('/login', validate(authValidation.login), authController.login);
  *      content:
  *        application/json:
  *           schema:
- *              $ref: '#/components/schemas/resetPassword'
+ *              $ref: '#/components/schemas/updatePassword'
  *     responses:
  *       200:
- *         description: 重設成功
+ *         description: 更新成功
  *         content:
  *          application/json:
  *              schema:
@@ -193,8 +183,9 @@ router.post('/login', validate(authValidation.login), authController.login);
  */
 router.put(
   '/password',
-  validate(authValidation.resetPassword),
-  authController.resetPassword
+  isAuth(),
+  validate(authValidation.updatePassword),
+  authController.updatePassword
 );
 
 /* --------------------
