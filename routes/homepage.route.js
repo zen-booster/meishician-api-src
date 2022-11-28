@@ -368,4 +368,60 @@ router.patch(
   homepageController.updateLinkOrder
 );
 
+/**
+ * @openapi
+ * /api/homepage/{cardId}/job-info/toggle:
+ *   patch:
+ *     description: toggle 名片職務資訊是否公開
+ *     summary: toggle 名片職務資訊是否公開
+ *     tags:
+ *      - 名片資訊頁面
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *              $ref: '#/components/schemas/jobInfoToggle'
+ *     responses:
+ *       200:
+ *         description: 修改成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: 'success'
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      jobInfo:
+ *                        type: object
+ *                      cardId:
+ *                        type: string
+ *                      layoutDirection:
+ *                        type: string
+ *                      homepageLink:
+ *                        type: array
+ *                        items:
+ *                          type: object
+ *                      isAuthor:
+ *                        type: boolean
+ */
+
+router.patch(
+  '/:cardId/job-info/toggle',
+  isAuth(),
+  validate(homepageValidation.jobInfoToggle),
+  homepageController.jobInfoToggle
+);
+
 module.exports = router;

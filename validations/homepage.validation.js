@@ -127,10 +127,34 @@ const updateLinkOrder = {
   }),
 };
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    jobInfoToggle:
+ *      type: object
+ *      properties:
+ *         jobInfo:
+ *           type: string
+ *      additionalProperties: false
+ */
+
+const jobInfoToggle = {
+  params: Joi.object().keys({
+    cardId: Joi.string().required().custom(objectID),
+  }),
+  body: Joi.object().keys({
+    jobInfo: Joi.string()
+      .valid('name', 'companyName', 'jobTitle', 'phoneNumber', 'city', 'domain')
+      .required(),
+  }),
+};
+
 module.exports = {
   renameHomepageTitle,
   addLink,
   deleteLink,
   editLink,
   updateLinkOrder,
+  jobInfoToggle,
 };

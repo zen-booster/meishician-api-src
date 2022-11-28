@@ -211,6 +211,32 @@ const updateLinkOrder = handleErrorAsync(async (req, res, next) => {
     });
   }
 });
+
+const jobInfoToggle = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const { cardId } = req.params;
+  const { jobInfo } = req.body;
+
+  const card = await Card.findOne({ _id: cardId, userId });
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  } else {
+    card.jobInfo[jobInfo].isPublic = !card.jobInfo[jobInfo].isPublic;
+
+    card.save();
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+      data: {
+        jobInfo: card.jobInfo,
+        cardId: card._id,
+        layoutDirection: card.layoutDirection,
+        homepageLink: card.homepageLink,
+        isAuthor: true,
+      },
+    });
+  }
+});
+
 module.exports = {
   renameHomepageTitle,
   getHomepageInfo,
@@ -218,4 +244,5 @@ module.exports = {
   deleteLink,
   editLink,
   updateLinkOrder,
+  jobInfoToggle,
 };
