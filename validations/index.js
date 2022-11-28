@@ -3,3 +3,5 @@ module.exports.portfolioValidation = require('./portfolio.validation');
 module.exports.bookmarkListValidation = require('./bookmark-list.validation');
 
 module.exports.homepageValidation = require('./homepage.validation');
+
+module.exports.messageValidation = require('./messages.validation');

@@ -58,9 +58,7 @@ userSchema.pre('save', async function (next) {
     }
 
     const hashedPassword = await bcrypt.hash(this.password, 10);
-    const hashedSafetyAnswer = await bcrypt.hash(this.safetyAnswer, 10);
     this.password = hashedPassword;
-    this.safetyAnswer = hashedSafetyAnswer;
   } catch (err) {
     return next(err);
   }
