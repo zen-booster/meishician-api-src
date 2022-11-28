@@ -69,13 +69,6 @@ router.get(
   homepageController.getHomepageInfo
 );
 
-router.get(
-  '/:cardId/canvas',
-  isAuth(),
-  // validate(homepageValidation.renameHomepageTitle),
-  homepageController.getHomepageInfo
-);
-
 /* --------------------
 ---更改名片資訊標題
 ----------------------*/

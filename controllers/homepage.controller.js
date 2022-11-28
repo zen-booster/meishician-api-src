@@ -32,6 +32,7 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
         isAuthor: true,
+        cardImageData: card.cardImageData,
       },
     });
   } else {
@@ -49,6 +50,25 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
       },
     });
   }
+});
+
+const getCardCanvas = handleErrorAsync(async (req, res, next) => {
+  const userId = req?.user?._id;
+  const { cardId } = req.params;
+  const card = await Card.findOne({ _id: cardId, isPublished: true });
+
+  if (card === null) {
+    return next(
+      new AppError(httpStatus.NOT_FOUND, 'cardId not found or not published')
+    );
+  }
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      cardImageData: card.cardImageData,
+    },
+  });
 });
 
 const renameHomepageTitle = handleErrorAsync(async (req, res, next) => {
@@ -244,4 +264,5 @@ module.exports = {
   editLink,
   updateLinkOrder,
   jobInfoToggle,
+  getCardCanvas,
 };
