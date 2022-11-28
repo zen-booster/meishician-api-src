@@ -39,7 +39,7 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
  *         description: 篩選個人名片
  *     responses:
  *       200:
- *         description: Returns a mysterious string.
+ *         description: 取得成功
  *         content:
  *          application/json:
  *              schema:
@@ -64,9 +64,49 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
  *                              type: string
  *                            cardId:
  *                              type: string
-
  */
-router.get('/', isAuth(), portfolioController.getPortfolio);
+router.get(
+  '/',
+  isAuth(),
+  validate(portfolioValidation.getPortfolio),
+  portfolioController.getPortfolio
+);
+
+/**
+ * @openapi
+ * /api/portfolio/{cardId}:
+ *   delete:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 刪除個人卡片
+ *     summary: 刪除個人卡片
+ *     tags:
+ *      - 個人名片
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *     responses:
+ *       200:
+ *         description: 刪除成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ */
+router.delete(
+  '/:cardId',
+  isAuth(),
+  validate(portfolioValidation.deleteCard),
+  portfolioController.deleteCard
+);
 
 /* --------------------
 ---新增卡片
@@ -237,5 +277,49 @@ router.patch(
  *                        type: string
  */
 router.post('/:cardId/publish', isAuth(), portfolioController.publishCard);
+
+/**
+ * @openapi
+ * /api/portfolio/{cardId}/job-info:
+ *   post:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 修改卡片職務資訊
+ *     summary: 修改卡片職務資訊
+ *     tags:
+ *      - 個人名片
+ *     parameters:
+ *       - in: path
+ *         name: cardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The card ID
+ *
+ *     responses:
+ *       200:
+ *         description: 發佈成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ */
+router.put(
+  '/:cardId/job-info',
+  isAuth(),
+  validate(portfolioValidation.editCardJobInfo),
+  portfolioController.editCardJobInfo
+);
+
+// router.get(
+//   '/:cardId/',
+//   isAuth(),
+//   validate(portfolioValidation.getCard),
+//   portfolioController.getCard
+// );
 
 module.exports = router;

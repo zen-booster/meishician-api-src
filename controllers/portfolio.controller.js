@@ -39,6 +39,22 @@ const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
   });
 });
 
+const getCard = handleErrorAsync(async (req, res, next, err) => {
+  const userId = req.user._id;
+  const { cardId } = req.params;
+
+  const card = await Card.findOne({ _id: cardId, userId });
+
+  if (card === null) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  }
+
+  return res.status(httpStatus.CREATED).send({
+    status: 'success',
+    data: card,
+  });
+});
+
 const createNewCard = handleErrorAsync(async (req, res, next, err) => {
   const { jobInfo, layoutDirection } = req.body;
   const CardData = {
@@ -59,6 +75,22 @@ const createNewCard = handleErrorAsync(async (req, res, next, err) => {
     data: {
       cardId,
     },
+  });
+});
+
+const deleteCard = handleErrorAsync(async (req, res, next, err) => {
+  const { cardId } = req.params;
+  const userId = req.user._id;
+
+  const card = await Card.deleteOne({ _id: cardId, userId });
+  const canvas = await Canvas.deleteOne({ _id: cardId });
+
+  if (card.deletedCount === 0 || canvas.deletedCount === 0) {
+    return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
+  }
+
+  return res.status(httpStatus.CREATED).send({
+    status: 'success',
   });
 });
 
@@ -135,10 +167,33 @@ const publishCard = handleErrorAsync(async (req, res, next, err) => {
     },
   });
 });
+
+const editCardJobInfo = handleErrorAsync(async (req, res, next, err) => {
+  const { jobInfo } = req.body;
+  const { cardId } = req.params;
+  const userId = req.user._id;
+
+  const card = await Card.findOneAndUpdate(
+    { _id: cardId, userId },
+    { jobInfo },
+    { new: true }
+  );
+
+  return res.status(httpStatus.CREATED).send({
+    status: 'success',
+    // data: {
+    //   card,
+    // },
+  });
+});
+
 module.exports = {
   getPortfolio,
   createNewCard,
+  deleteCard,
   publishCard,
   saveCardCanvas,
   getCardCanvas,
+  editCardJobInfo,
+  getCard,
 };

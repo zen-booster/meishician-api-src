@@ -65,6 +65,13 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
 router.get(
   '/:cardId',
   isAuth(true),
+  validate(homepageValidation.getHomepageInfo),
+  homepageController.getHomepageInfo
+);
+
+router.get(
+  '/:cardId/canvas',
+  isAuth(),
   // validate(homepageValidation.renameHomepageTitle),
   homepageController.getHomepageInfo
 );

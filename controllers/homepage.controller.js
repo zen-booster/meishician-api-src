@@ -14,7 +14,6 @@ const ObjectId = mongoose.Types.ObjectId;
 const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
   const userId = req?.user?._id;
   const { cardId } = req.params;
-  const { newGroupName } = req.body;
   const card = await Card.findOne({ _id: cardId, isPublished: true });
 
   if (card === null) {

@@ -16,6 +16,24 @@ const linkTypeEnum = Card.schema.path('homepageLink.type').enumValues;
  *          required: true
  *      additionalProperties: false
  */
+const getHomepageInfo = {
+  params: Joi.object().keys({
+    cardId: Joi.string().required().custom(objectID),
+  }),
+};
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *    renameHomepageTitle:
+ *      type: object
+ *      properties:
+ *        homepageTitle:
+ *          type: string
+ *          required: true
+ *      additionalProperties: false
+ */
 const renameHomepageTitle = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID),
@@ -157,4 +175,5 @@ module.exports = {
   editLink,
   updateLinkOrder,
   jobInfoToggle,
+  getHomepageInfo,
 };
