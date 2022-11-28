@@ -31,11 +31,6 @@ const { User } = require('../models');
  *        confirmPassword:
  *          type: string
  *          default: stringPassword123
- *        safetyQuestion:
- *          type: string
- *          enum: ['Q1_FIRST_PET_NAME', 'Q2_PARENTS_CITY']
- *        safetyAnswer:
- *          type: string
  *        avatar:
  *          type: string
  *      additionalProperties: false
