@@ -1,3 +1,4 @@
+const { string } = require('joi');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -24,6 +25,7 @@ const bookmarkListSchema = new mongoose.Schema(
       type: [groupSchema],
       default: [{ name: '預設', isDefaultGroup: true }],
     },
+    tags: [String],
   },
   { strictQuery: false, timestamps: true }
 );

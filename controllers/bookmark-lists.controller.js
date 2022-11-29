@@ -151,6 +151,17 @@ const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
   );
 
   if (updatedBookmark) {
+    //新增unique tag
+    const { tags: newTags } = updateData;
+    console.log(newTags);
+    if (newTags) {
+      const addNewTag = await BookmarkList.findOneAndUpdate(
+        { userId },
+        { $addToSet: { tags: { $each: newTags } } },
+        { new: true }
+      );
+      console.log(addNewTag);
+    }
     return res.status(httpStatus.OK).send({
       status: 'success',
     });
@@ -160,7 +171,6 @@ const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
 });
 
 const getBookmarkList = handleErrorAsync(async (req, res, next) => {
-  // TODO: 新增篩選query string
   const userId = req.user._id;
   const bookmarkList = await BookmarkList.findOne({ userId }).lean();
 
@@ -381,6 +391,30 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
   });
 });
 
+const getTagList = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const bookmarkList = await BookmarkList.findOne({ userId }).lean();
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: bookmarkList.tags,
+    },
+  });
+});
+
+const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const bookmarkList = await BookmarkList.findOne({ userId }).lean();
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      records: bookmarkList.tags,
+    },
+  });
+});
+
 module.exports = {
   addBookmark,
   removeBookmark,
@@ -393,4 +427,5 @@ module.exports = {
   updateBookmarkListOrder,
   renameBookmarkList,
   getBookmarks,
+  getTagList,
 };
