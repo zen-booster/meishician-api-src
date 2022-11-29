@@ -538,7 +538,7 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
     },
   ]);
 
-  const totalCount = await Bookmark.aggregate([
+  let totalCount = await Bookmark.aggregate([
     {
       $match: { '_id.followerUserId': userId },
     },
@@ -564,9 +564,12 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
     {
       $match: query,
     },
-  ]).toArray().length;
+  ]);
 
-  console.log(totalCount);
+  totalCount = totalCount.length;
+  const totalPage = Math.ceil(totalCount / limit);
+
+  console.log(Bookmarks);
 
   const aggBookmarks = Bookmarks.map((ele) => {
     const { note, tags, followerGroupId, isPinned, createdAt } = ele;
@@ -605,9 +608,10 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
-      // totalPage,
-      // currentPage: page,
-      records: Bookmarks,
+      totalPage,
+      currentPage: page,
+      q,
+      records: aggBookmarks,
     },
   });
 });

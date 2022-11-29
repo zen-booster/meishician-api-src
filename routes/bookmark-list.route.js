@@ -668,6 +668,78 @@ router.get('/tags', isAuth(), bookmarkListController.getTagList);
 
 router.get('/tags/:tag', isAuth(), bookmarkListController.getTagBookmarks);
 
+/**
+ * @openapi
+ * /api/bookmark-list/search:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 搜尋收藏的卡片 tags, 公司, 職稱, 名字, 註記
+ *     summary: 搜尋收藏的卡片
+ *     tags:
+ *      - 名片管理
+ *     parameters:
+ *        - in: query
+ *          name: page
+ *          schema:
+ *            type: integer
+ *          description: 第幾頁
+ *        - in: query
+ *          name: limit
+ *          schema:
+ *            type: integer
+ *          description: 一頁幾筆
+ *        - in: query
+ *          name: q
+ *          required: true
+ *          schema:
+ *            type: string
+ *          description: search query
+ *     responses:
+ *       200:
+ *         description: 取得成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      totalPage:
+ *                        type: integer
+ *                      currentPage:
+ *                        type: integer
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            cardId:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            companyName:
+ *                              type: string
+ *                            jobTitle:
+ *                              type: string
+ *                            avatar:
+ *                              type: string
+ *                            note:
+ *                              type: string
+ *                            tags:
+ *                              type: array
+ *                              items:
+ *                                type:
+ *                                  string
+ *                            isPinned:
+ *                              type: boolean
+ *                             avatar:
+ *                               type: avatar
+ */
 router.get('/search', isAuth(), bookmarkListController.searchBookmarks);
 
 module.exports = router;
