@@ -73,6 +73,7 @@ const createNewCard = handleErrorAsync(async (req, res, next, err) => {
     status: 'success',
     data: {
       cardId,
+      canvasData: canvas,
     },
   });
 });
