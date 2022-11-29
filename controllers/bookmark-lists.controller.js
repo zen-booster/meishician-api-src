@@ -341,35 +341,37 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
     .limit(limit)
     .skip(limit * (page - 1))
     .sort(asc)
-    .select('_id createdAt isPinned');
+    .select(
+      '_id createdAt isPinned tags followerGroupId note tags  followerGroupId'
+    );
+  console.log(Bookmarks[0]._id.followedCardId);
 
   const aggBookmarks = Bookmarks.map((ele) => {
+    const { note, tags, followerGroupId, isPinned, createdAt } = ele;
     const orgData = ele._id;
     const jobInfo = orgData?.followedCardId?.jobInfo;
     const userData = orgData?.followedCardId?.userId;
     const cardId = orgData?.followedCardId?._id;
-    let apiResData = {};
+
+    let apiResData = { note, tags, followerGroupId, isPinned, createdAt };
+
     if (jobInfo) {
       const [name, companyName, jobTitle] = [
         'name',
         'companyName',
         'jobTitle',
       ].map((ele) => jobInfo[ele].content);
-      apiResData = { ...apiResData, name, companyName, jobTitle };
-    } else {
       apiResData = {
         ...apiResData,
-        name: null,
-        companyName: null,
-        jobTitle: null,
+        name,
+        companyName,
+        jobTitle,
       };
     }
 
     if (userData) {
-      const [avatar] = ['avatar'].map((ele) => jobInfo[ele]);
+      const [avatar] = ['avatar'].map((ele) => userData[ele]);
       apiResData = { ...apiResData, avatar };
-    } else {
-      apiResData = { ...apiResData, avatar: null };
     }
 
     apiResData = { ...apiResData, cardId: cardId ?? null };
@@ -405,12 +407,69 @@ const getTagList = handleErrorAsync(async (req, res, next) => {
 
 const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const bookmarkList = await BookmarkList.findOne({ userId }).lean();
+  const { tag } = req.params;
+  const { limit, page } = req.query;
+  console.log(tag);
+  const Bookmarks = await Bookmark.find({
+    '_id.followerUserId': userId,
+    tags: { $in: [tag] },
+  })
+    .populate({
+      path: '_id.followedCardId',
+      populate: {
+        path: 'userId',
+      },
+    })
+    .limit(limit)
+    .skip(limit * (page - 1))
+    .sort('-createdAt')
+    .select('_id createdAt isPinned tags');
+
+  const aggBookmarks = Bookmarks.map((ele) => {
+    const orgData = ele._id;
+    const jobInfo = orgData?.followedCardId?.jobInfo;
+    const userData = orgData?.followedCardId?.userId;
+    const cardId = orgData?.followedCardId?._id;
+    let apiResData = {};
+    if (jobInfo) {
+      const [name, companyName, jobTitle] = [
+        'name',
+        'companyName',
+        'jobTitle',
+        'tags',
+      ].map((ele) => jobInfo[ele].content);
+      apiResData = { ...apiResData, name, companyName, jobTitle };
+    } else {
+      apiResData = {
+        ...apiResData,
+        name: null,
+        companyName: null,
+        jobTitle: null,
+      };
+    }
+
+    if (userData) {
+      const [avatar] = ['avatar'].map((ele) => jobInfo[ele]);
+      apiResData = { ...apiResData, avatar };
+    } else {
+      apiResData = { ...apiResData, avatar: null };
+    }
+
+    apiResData = { ...apiResData, cardId: cardId ?? null };
+
+    return apiResData;
+  });
+
+  const totalCount = await Bookmark.find({ followerGroupId: tag }).count();
+
+  const totalPage = Math.ceil(totalCount / limit);
 
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
-      records: bookmarkList.tags,
+      totalPage,
+      currentPage: page,
+      records: aggBookmarks,
     },
   });
 });
@@ -428,4 +487,5 @@ module.exports = {
   renameBookmarkList,
   getBookmarks,
   getTagList,
+  getTagBookmarks,
 };

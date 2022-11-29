@@ -70,9 +70,9 @@ const updatePassword = handleErrorAsync(
 );
 
 const updateProfile = handleErrorAsync(async (req, res) => {
-  const userID = req.user._id;
+  const userId = req.user._id;
   const updateData = req.body;
-  const user = await User.findByIdAndUpdate({ _id: userID }, updateData, {
+  const user = await User.findByIdAndUpdate({ _id: userId }, updateData, {
     new: true,
   });
 
@@ -89,18 +89,18 @@ const updateProfile = handleErrorAsync(async (req, res) => {
 });
 
 const getNavbarStatus = handleErrorAsync(async (req, res) => {
-  const userID = req.user._id;
+  const userId = req.user._id;
   const updateData = req.body;
-  const user = await User.find({
-    _id: userID,
+  const user = await User.findOne({
+    _id: userId,
   });
   const unreadMessages = await Message.find({
-    recipientUserId: userID,
+    recipientuserId: userId,
     isRead: false,
   });
 
   const messageCount = unreadMessages.length;
-
+  console.log(user);
   return res.status(httpStatus.OK).json({
     status: 'success',
     data: {

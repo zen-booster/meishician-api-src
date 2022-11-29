@@ -550,6 +550,8 @@ router.get(
   bookmarkListController.getBookmarks
 );
 
-router.get('/tags/', isAuth(), bookmarkListController.getTagList);
+router.get('/tags', isAuth(), bookmarkListController.getTagList);
+
+router.get('/tags/:tag', isAuth(), bookmarkListController.getTagBookmarks);
 
 module.exports = router;
