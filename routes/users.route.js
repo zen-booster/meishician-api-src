@@ -236,4 +236,37 @@ router.patch(
   authController.updateProfile
 );
 
+/**
+ * @openapi
+ * /api/users/:
+ *   get:
+ *     description: 取得導覽列狀態
+ *     summary: 取得導覽列狀態
+ *     tags:
+ *      - 會員驗證
+
+ *     responses:
+ *       200:
+ *         description: 成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         avatar:
+ *                           type: string
+ *                         messageCount:
+ *                           type: integer
+ */
+router.get('/', isAuth(), authController.getNavbarStatus);
+
 module.exports = router;

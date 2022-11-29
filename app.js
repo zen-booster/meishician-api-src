@@ -12,6 +12,7 @@ const portfolioRouter = require('./routes/portfolio.route');
 const bookmarkListRouter = require('./routes/bookmark-list.route');
 const homepageRouter = require('./routes/homepage.route');
 const messageRouter = require('./routes/messages.route');
+const cardWallRouter = require('./routes/card-wall.route');
 // const authRouter = require('./routes/auth.route');
 
 require('./connections/mongodb');
@@ -33,7 +34,7 @@ app.use('/api/portfolio', portfolioRouter);
 app.use('/api/bookmark-list', bookmarkListRouter);
 app.use('/api/homepage', homepageRouter);
 app.use('/api/messages', messageRouter);
-
+app.use('/api/card-wall', cardWallRouter);
 swaggerDocs(app);
 
 // 上線版本錯誤訊息

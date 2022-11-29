@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
 
-const { User, BookmarkList } = require('../models');
+const { User, BookmarkList, Message } = require('../models');
 const { generateJWT } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
@@ -88,9 +88,34 @@ const updateProfile = handleErrorAsync(async (req, res) => {
   });
 });
 
+const getNavbarStatus = handleErrorAsync(async (req, res) => {
+  const userID = req.user._id;
+  const updateData = req.body;
+  const user = await User.find({
+    _id: userID,
+  });
+  const unreadMessages = await Message.find({
+    recipientUserId: userID,
+    isRead: false,
+  });
+
+  const messageCount = unreadMessages.length;
+
+  return res.status(httpStatus.OK).json({
+    status: 'success',
+    data: {
+      user: {
+        avatar: user.avatar,
+        messageCount,
+      },
+    },
+  });
+});
+
 module.exports = {
   signUp,
   login,
   updatePassword,
   updateProfile,
+  getNavbarStatus,
 };
