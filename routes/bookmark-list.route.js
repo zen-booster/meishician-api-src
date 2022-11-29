@@ -526,6 +526,10 @@ router.patch(
  *                  data:
  *                    type: object
  *                    properties:
+ *                      totalPage:
+ *                        type: integer
+ *                      currentPage:
+ *                        type: integer
  *                      records:
  *                        type: array
  *                        items:
@@ -541,6 +545,15 @@ router.patch(
  *                              type: string
  *                            avatar:
  *                              type: string
+ *                            note:
+ *                              type: string
+ *                            tags:
+ *                              type: array
+ *                              items:
+ *                                type:
+ *                                  string
+ *                            isPinned:
+ *                              type: boolean
  */
 
 router.get(
@@ -550,8 +563,111 @@ router.get(
   bookmarkListController.getBookmarks
 );
 
+/**
+ * @openapi
+ * /api/bookmark-list/tags:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 取得tags列表
+ *     summary: 取得tags列表
+ *     tags:
+ *      - 名片管理
+ *     responses:
+ *       200:
+ *         description: 取得成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: string
+ */
+
 router.get('/tags', isAuth(), bookmarkListController.getTagList);
 
+/**
+ * @openapi
+ * /api/bookmark-list/tags/{tags}:
+ *   get:
+ *     security:
+ *       - bearerAuth: []
+ *     description: 取得tag內卡片列表
+ *     summary: 取得tag內卡片列表
+ *     tags:
+ *      - 名片管理
+ *     parameters:
+ *        - in: query
+ *          name: page
+ *          schema:
+ *            type: integer
+ *          description: 第幾頁
+ *        - in: query
+ *          name: limit
+ *          schema:
+ *            type: integer
+ *          description: 一頁幾筆
+ *        - in: path
+ *          name: tag
+ *          required: true
+ *          schema:
+ *            type: string
+ *          description: tag
+ *     responses:
+ *       200:
+ *         description: 取得成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                    type: object
+ *                    properties:
+ *                      totalPage:
+ *                        type: integer
+ *                      currentPage:
+ *                        type: integer
+ *                      records:
+ *                        type: array
+ *                        items:
+ *                          types: object
+ *                          properties:
+ *                            cardId:
+ *                              type: string
+ *                            name:
+ *                              type: string
+ *                            companyName:
+ *                              type: string
+ *                            jobTitle:
+ *                              type: string
+ *                            avatar:
+ *                              type: string
+ *                            note:
+ *                              type: string
+ *                            tags:
+ *                              type: array
+ *                              items:
+ *                                type:
+ *                                  string
+ *                            isPinned:
+ *                              type: boolean
+ */
+
 router.get('/tags/:tag', isAuth(), bookmarkListController.getTagBookmarks);
+
+router.get('/search', isAuth(), bookmarkListController.searchBookmarks);
 
 module.exports = router;

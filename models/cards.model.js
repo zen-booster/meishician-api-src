@@ -61,7 +61,6 @@ const cardSchema = new mongoose.Schema(
 
     layoutDirection: {
       type: String,
-      required: true,
       enum: ['horizontal', 'vertical'],
     },
   },

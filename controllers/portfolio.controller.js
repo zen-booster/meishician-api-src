@@ -61,7 +61,6 @@ const createNewCard = handleErrorAsync(async (req, res, next, err) => {
     userId: req.user._id,
     jobInfo,
     isPublished: false,
-    layoutDirection,
   };
 
   const card = await Card.create(CardData);
@@ -115,10 +114,8 @@ const getCardCanvas = handleErrorAsync(async (req, res, next, err) => {
 });
 
 const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
-  const { canvasData, cardImageData } = req.body;
+  const { canvasData, cardImageData, layoutDirection } = req.body;
   const { cardId } = req.params;
-
-  console.log(canvasData, cardImageData);
 
   const card = await Card.findById(cardId).exec();
 
@@ -128,7 +125,7 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
 
   const updatedCard = await Card.findByIdAndUpdate(
     cardId,
-    { cardImageData },
+    { cardImageData, layoutDirection },
     { new: true }
   );
 
@@ -143,6 +140,7 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
     data: {
       cardId,
       canvasData: updatedCanvas.canvasData,
+      layoutDirection,
     },
   });
 });

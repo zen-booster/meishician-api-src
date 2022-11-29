@@ -7,6 +7,7 @@ const { User, Bookmark, BookmarkList, Card } = require('../models');
 const { generateJWT } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
+const { query } = require('express');
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -327,7 +328,11 @@ const renameBookmarkList = handleErrorAsync(async (req, res, next) => {
 const getBookmarks = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { followerGroupId } = req.params;
-  const { limit, page } = req.query;
+  let { limit, page } = req.query;
+
+  limit = limit ?? 10;
+  page = page ?? 1;
+
   let { asc } = req.query;
   asc = asc ? asc : 'createdAt';
 
@@ -344,7 +349,6 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
     .select(
       '_id createdAt isPinned tags followerGroupId note tags  followerGroupId'
     );
-  console.log(Bookmarks[0]._id.followedCardId);
 
   const aggBookmarks = Bookmarks.map((ele) => {
     const { note, tags, followerGroupId, isPinned, createdAt } = ele;
@@ -408,8 +412,11 @@ const getTagList = handleErrorAsync(async (req, res, next) => {
 const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { tag } = req.params;
-  const { limit, page } = req.query;
-  console.log(tag);
+  let { limit, page } = req.query;
+
+  limit = limit ?? 10;
+  page = page ?? 1;
+
   const Bookmarks = await Bookmark.find({
     '_id.followerUserId': userId,
     tags: { $in: [tag] },
@@ -423,36 +430,36 @@ const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
     .limit(limit)
     .skip(limit * (page - 1))
     .sort('-createdAt')
-    .select('_id createdAt isPinned tags');
+    .select(
+      '_id createdAt isPinned tags followerGroupId note tags  followerGroupId'
+    );
 
   const aggBookmarks = Bookmarks.map((ele) => {
+    const { note, tags, followerGroupId, isPinned, createdAt } = ele;
     const orgData = ele._id;
     const jobInfo = orgData?.followedCardId?.jobInfo;
     const userData = orgData?.followedCardId?.userId;
     const cardId = orgData?.followedCardId?._id;
-    let apiResData = {};
+
+    let apiResData = { note, tags, followerGroupId, isPinned, createdAt };
+
     if (jobInfo) {
       const [name, companyName, jobTitle] = [
         'name',
         'companyName',
         'jobTitle',
-        'tags',
       ].map((ele) => jobInfo[ele].content);
-      apiResData = { ...apiResData, name, companyName, jobTitle };
-    } else {
       apiResData = {
         ...apiResData,
-        name: null,
-        companyName: null,
-        jobTitle: null,
+        name,
+        companyName,
+        jobTitle,
       };
     }
 
     if (userData) {
-      const [avatar] = ['avatar'].map((ele) => jobInfo[ele]);
+      const [avatar] = ['avatar'].map((ele) => userData[ele]);
       apiResData = { ...apiResData, avatar };
-    } else {
-      apiResData = { ...apiResData, avatar: null };
     }
 
     apiResData = { ...apiResData, cardId: cardId ?? null };
@@ -460,7 +467,10 @@ const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
     return apiResData;
   });
 
-  const totalCount = await Bookmark.find({ followerGroupId: tag }).count();
+  const totalCount = await Bookmark.find({
+    '_id.followerUserId': userId,
+    tags: { $in: [tag] },
+  }).count();
 
   const totalPage = Math.ceil(totalCount / limit);
 
@@ -470,6 +480,134 @@ const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
       totalPage,
       currentPage: page,
       records: aggBookmarks,
+    },
+  });
+});
+
+const searchBookmarks = handleErrorAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  let { limit, page } = req.query;
+  let { q } = req.query;
+
+  limit = limit ?? 10;
+  page = page ?? 1;
+
+  let regex = q ? { $regex: new RegExp(q, 'i') } : null;
+
+  let query = {
+    $or: [
+      { 'card.jobInfo.name.content': regex },
+      { 'card.jobInfo.companyName.content': regex },
+      { 'card.jobInfo.jobTitle.content': regex },
+      { tags: regex },
+      { note: regex },
+    ],
+  };
+
+  const Bookmarks = await Bookmark.aggregate([
+    {
+      $match: { '_id.followerUserId': userId },
+    },
+    {
+      $lookup: {
+        from: 'cards', // name of the collection, not model or schema name
+        localField: '_id.followedCardId',
+        foreignField: '_id',
+        as: 'card',
+      },
+    },
+    { $unwind: '$card' },
+    {
+      $lookup: {
+        from: 'users', // name of the collection, not model or schema name
+        localField: '_id.followerUserId',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
+    { $unwind: '$user' },
+
+    {
+      $match: query,
+    },
+    {
+      $skip: limit * (page - 1),
+    },
+    {
+      $limit: limit,
+    },
+  ]);
+
+  const totalCount = await Bookmark.aggregate([
+    {
+      $match: { '_id.followerUserId': userId },
+    },
+    {
+      $lookup: {
+        from: 'cards', // name of the collection, not model or schema name
+        localField: '_id.followedCardId',
+        foreignField: '_id',
+        as: 'card',
+      },
+    },
+    { $unwind: '$card' },
+    {
+      $lookup: {
+        from: 'users', // name of the collection, not model or schema name
+        localField: '_id.followerUserId',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
+    { $unwind: '$user' },
+
+    {
+      $match: query,
+    },
+  ]).toArray().length;
+
+  console.log(totalCount);
+
+  const aggBookmarks = Bookmarks.map((ele) => {
+    const { note, tags, followerGroupId, isPinned, createdAt } = ele;
+    const jobInfo = ele?.card?.jobInfo;
+    const userData = ele?.user;
+    const cardId = ele?.card?._id;
+
+    let apiResData = { note, tags, followerGroupId, isPinned, createdAt };
+
+    if (jobInfo) {
+      const [name, companyName, jobTitle] = [
+        'name',
+        'companyName',
+        'jobTitle',
+      ].map((ele) => jobInfo[ele].content);
+      apiResData = {
+        ...apiResData,
+        name,
+        companyName,
+        jobTitle,
+      };
+    }
+
+    if (userData) {
+      const [avatar] = ['avatar'].map((ele) => userData[ele]);
+      apiResData = { ...apiResData, avatar };
+    }
+
+    apiResData = { ...apiResData, cardId: cardId ?? null };
+
+    return apiResData;
+  });
+
+  // const totalPage = Math.ceil(totalCount / limit);
+
+  return res.status(httpStatus.OK).send({
+    status: 'success',
+    data: {
+      // totalPage,
+      // currentPage: page,
+      records: Bookmarks,
     },
   });
 });
@@ -488,4 +626,5 @@ module.exports = {
   getBookmarks,
   getTagList,
   getTagBookmarks,
+  searchBookmarks,
 };

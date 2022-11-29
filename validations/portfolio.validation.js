@@ -76,11 +76,6 @@ const { objectID } = require('./custom.validation');
  *                isPublic:
  *                  type: boolean
  *                  default: true
- *        layoutDirection:
- *          type: string
- *          enum:
- *            - vertical
- *            - horizontal
  *      additionalProperties: false
  */
 const createNewCard = {
@@ -122,9 +117,6 @@ const createNewCard = {
         })
         .required(),
     }),
-    layoutDirection: Joi.string()
-      .required()
-      .valid(...['horizontal', 'vertical']),
   }),
 };
 
@@ -156,6 +148,8 @@ const createNewCard = {
  *              type: string
  *            back:
  *              type: string
+ *        layoutDirection:
+ *         type: string
  *      additionalProperties: false
  */
 const saveCardCanvas = {
@@ -178,6 +172,9 @@ const saveCardCanvas = {
       })
       .required()
       .min(1),
+    layoutDirection: Joi.string()
+      .required()
+      .valid(...['horizontal', 'vertical']),
   }),
 };
 
