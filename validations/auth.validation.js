@@ -74,6 +74,15 @@ const login = {
   }),
 };
 
+const resetPassword = {
+  body: Joi.object().keys({
+    password: Joi.string().required().custom(password),
+    confirmPassword: Joi.any()
+      .equal(Joi.ref('password'))
+      .required()
+      .messages({ 'any.only': '{{#label}} does not match' }),
+  }),
+};
 /**
  * @openapi
  * components:
@@ -128,9 +137,17 @@ const updateProfile = {
     .min(1),
 };
 
+const sendResetMail = {
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+  }),
+};
+
 module.exports = {
   signUp,
   login,
   updatePassword,
   updateProfile,
+  sendResetMail,
+  resetPassword,
 };

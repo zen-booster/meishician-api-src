@@ -38,9 +38,10 @@ const isAuth = (isBypass = false) =>
     return next();
   });
 
-const generateJWT = (payload) => {
+const generateJWT = (payload, expiresIn) => {
+  expiresIn = expiresIn ?? process.env.JWT_EXPIRE_TIME;
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE_TIME,
+    expiresIn: expiresIn,
   });
   return token;
 };

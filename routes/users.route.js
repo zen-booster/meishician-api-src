@@ -61,6 +61,39 @@ router.get(
   )
 );
 
+/**
+ * @openapi
+ * /api/users/:
+ *   get:
+ *     description: 取得導覽列狀態
+ *     summary: 取得導覽列狀態
+ *     tags:
+ *      - 會員驗證
+
+ *     responses:
+ *       200:
+ *         description: 成功
+ *         content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  status:
+ *                    type: string
+ *                    default: "success"
+ *                  data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         avatar:
+ *                           type: string
+ *                         messageCount:
+ *                           type: integer
+ */
+router.get('/', isAuth(), authController.getNavbarStatus);
+
 /* --------------------
 ---註冊
 ----------------------*/
@@ -236,37 +269,22 @@ router.patch(
   authController.updateProfile
 );
 
-/**
- * @openapi
- * /api/users/:
- *   get:
- *     description: 取得導覽列狀態
- *     summary: 取得導覽列狀態
- *     tags:
- *      - 會員驗證
+router.post(
+  '/send-reset-mail',
+  validate(authValidation.sendResetMail),
+  authController.sendResetMail
+);
 
- *     responses:
- *       200:
- *         description: 成功
- *         content:
- *          application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  status:
- *                    type: string
- *                    default: "success"
- *                  data:
- *                   type: object
- *                   properties:
- *                     user:
- *                       type: object
- *                       properties:
- *                         avatar:
- *                           type: string
- *                         messageCount:
- *                           type: integer
- */
-router.get('/', isAuth(), authController.getNavbarStatus);
+router.post(
+  '/send-reset-mail',
+  validate(authValidation.sendResetMail),
+  authController.sendResetMail
+);
+
+router.put(
+  '/reset-password',
+  validate(authValidation.resetPassword),
+  authController.resetPassword
+);
 
 module.exports = router;
