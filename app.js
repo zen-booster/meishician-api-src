@@ -3,6 +3,7 @@ const cors = require('cors');
 // const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const session = require('express-session');
 
 const swaggerDocs = require('./utils/swagger');
 
@@ -13,6 +14,7 @@ const bookmarkListRouter = require('./routes/bookmark-list.route');
 const homepageRouter = require('./routes/homepage.route');
 const messageRouter = require('./routes/messages.route');
 const cardWallRouter = require('./routes/card-wall.route');
+const authRouter = require('./routes/auth.route');
 // const authRouter = require('./routes/auth.route');
 
 require('./connections/mongodb');
@@ -28,6 +30,7 @@ app.use(cookieParser());
 // app.set('view engine', 'ejs');
 
 app.use(cors());
+
 app.use('/api/users', userRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/portfolio', portfolioRouter);
@@ -35,6 +38,7 @@ app.use('/api/bookmark-list', bookmarkListRouter);
 app.use('/api/homepage', homepageRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/card-wall', cardWallRouter);
+app.use('/auth', authRouter);
 swaggerDocs(app);
 
 // 上線版本錯誤訊息
