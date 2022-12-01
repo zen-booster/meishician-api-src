@@ -1,4 +1,4 @@
-const defaultCanvasJSON = JSON.stringify({
+const defaultCanvasJSON = {
   version: '5.2.4',
   background: '#DDDDDD',
   objects: [
@@ -41,10 +41,14 @@ const defaultCanvasJSON = JSON.stringify({
       evented: false,
     },
   ],
-});
+};
 
 let frontDefaultCanvasJSON = defaultCanvasJSON;
 frontDefaultCanvasJSON['id'] = 'front';
+frontDefaultCanvasJSON = JSON.stringify(frontDefaultCanvasJSON);
+
 let backDefaultCanvasJSON = defaultCanvasJSON;
 backDefaultCanvasJSON['id'] = 'back';
+backDefaultCanvasJSON = JSON.stringify(backDefaultCanvasJSON);
+
 module.exports = { frontDefaultCanvasJSON, backDefaultCanvasJSON };
