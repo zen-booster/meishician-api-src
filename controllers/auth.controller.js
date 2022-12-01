@@ -146,8 +146,8 @@ const sendResetMail = handleErrorAsync(async (req, res, next) => {
     subject: 'MEISHIcain 密碼重設信件',
     html: `
     <h2>MEISHIcian密碼重設</h2>
-    <p>親愛的用戶您好，請在30分鐘內點選<a href="http://localhost:3000/reset-password?token=${token}}">此連結</a>進行密碼重設，請勿回復此信件，謝謝您</p>
-    <p>驗證碼為 ${token}</p>
+    <p>親愛的用戶您好，請在30分鐘內點選<a href="http://localhost:3000/reset-password?token=${token}">此連結</a>進行密碼重設，請勿回復此信件，謝謝您</p>
+    <p>網址為 http://localhost:3000/reset-password?token=${token}</p>
     `,
   };
 
