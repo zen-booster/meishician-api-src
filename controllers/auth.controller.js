@@ -71,7 +71,7 @@ const updatePassword = handleErrorAsync(
   }
 );
 
-const updateProfile = handleErrorAsync(async (req, res) => {
+const updateProfile = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const updateData = req.body;
   const user = await User.findByIdAndUpdate({ _id: userId }, updateData, {
@@ -90,19 +90,19 @@ const updateProfile = handleErrorAsync(async (req, res) => {
   });
 });
 
-const getNavbarStatus = handleErrorAsync(async (req, res) => {
+const getNavbarStatus = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const updateData = req.body;
   const user = await User.findOne({
     _id: userId,
   });
+
   const unreadMessages = await Message.find({
     recipientuserId: userId,
     isRead: false,
   });
 
   const messageCount = unreadMessages.length;
-  console.log(user);
   return res.status(httpStatus.OK).json({
     status: 'success',
     data: {
@@ -114,14 +114,14 @@ const getNavbarStatus = handleErrorAsync(async (req, res) => {
   });
 });
 
-const sendResetMail = handleErrorAsync(async (req, res) => {
+const sendResetMail = handleErrorAsync(async (req, res, next) => {
   const { email } = req.body;
   const user = await User.findOne({
     email,
   });
 
   if (!user) {
-    return next(AppError(httpStatus.NOT_FOUND, 'email not found'));
+    return next(new AppError(httpStatus.NOT_FOUND, 'email not found'));
   }
 
   const token = generateJWT(
