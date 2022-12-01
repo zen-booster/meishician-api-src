@@ -21,21 +21,8 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
       new AppError(httpStatus.NOT_FOUND, 'cardId not found or not published')
     );
   }
-
   let { jobInfo } = card;
-  if (card.userId.toString() === userId.toString()) {
-    return res.status(httpStatus.OK).send({
-      status: 'success',
-      data: {
-        jobInfo,
-        cardId: card._id,
-        layoutDirection: card.layoutDirection,
-        homepageLink: card.homepageLink,
-        isAuthor: true,
-        cardImageData: card.cardImageData,
-      },
-    });
-  } else {
+  if (!userId) {
     jonInfo = Object.entries(jobInfo)
       .filter((ele) => ele[1].isPublic === true)
       .reduce((a, v) => ({ ...a, [v[0]]: v[1] }), {});
@@ -47,8 +34,26 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
         isAuthor: false,
+        cardImageData: card.cardImageData,
+        isPublished: card.isPublished,
       },
     });
+  }
+
+  if (card.userId.toString() === userId.toString()) {
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+      data: {
+        jobInfo,
+        cardId: card._id,
+        layoutDirection: card.layoutDirection,
+        homepageLink: card.homepageLink,
+        isAuthor: true,
+        cardImageData: card.cardImageData,
+        isPublished: card.isPublished,
+      },
+    });
+  } else {
   }
 });
 

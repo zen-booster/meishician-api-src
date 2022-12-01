@@ -161,7 +161,6 @@ const saveCardCanvas = {
       .keys({
         front: Joi.string().required(),
         back: Joi.string().required(),
-        position: Joi.string().required(),
       })
       .required()
       .min(1),
