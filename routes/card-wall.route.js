@@ -90,7 +90,7 @@ router.get(
     let { limit, page } = req.query;
     let { city, domain, name } = req.query;
 
-    limit = limit ?? 10;
+    limit = limit ?? 12;
     page = page ?? 1;
 
     console.log(limit, page);
@@ -116,23 +116,21 @@ router.get(
       .skip(limit * (page - 1))
       .sort('-createdAt');
 
-    console.log(cards);
-
     const totalCount = await Card.find({
       isPublished: true,
     }).count();
     const totalPage = Math.ceil(totalCount / limit);
 
     const response = cards.map((ele) => {
-      console.log(ele);
       return {
         name: ele.jobInfo.name.content,
         companyName: ele.jobInfo.companyName.content,
         jobTitle: ele.jobInfo.jobTitle.content,
         city: ele.jobInfo.city.content,
         domain: ele.jobInfo.domain.content,
-        cardImageData: ele.cardImageData,
+        cardImageData: { front: ele.cardImageData.front },
         cardId: ele._id,
+        layoutDirection: ele.layoutDirection,
         avatar: ele.userId?.avatar,
       };
     });
@@ -142,6 +140,7 @@ router.get(
       data: {
         currentPage: page,
         totalPage,
+        limit: limit,
         records: response,
       },
     });

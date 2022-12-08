@@ -8,7 +8,7 @@ const linkTypeEnum = Card.schema.path('homepageLink.type').enumValues;
  * @openapi
  * components:
  *   schemas:
- *    renameHomepageTitle:
+ *    getHomepageInfo:
  *      type: object
  *      properties:
  *        homepageTitle:

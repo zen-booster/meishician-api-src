@@ -124,7 +124,7 @@ router.get(
 router.put(
   '/:cardId/page-title',
   isAuth(),
-  // validate(homepageValidation.renameHomepageTitle),
+  validate(homepageValidation.renameHomepageTitle),
   homepageController.renameHomepageTitle
 );
 

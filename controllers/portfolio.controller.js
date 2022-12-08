@@ -25,7 +25,6 @@ const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
       jobTitle: jobInfo?.jobTitle?.content,
       cardId,
       canvasId,
-      up,
     };
   });
 
@@ -109,6 +108,7 @@ const getCardCanvas = handleErrorAsync(async (req, res, next, err) => {
     status: 'success',
     data: {
       cardId,
+      jobInfo: card.jobInfo,
       canvasData: canvas.canvasData,
     },
   });

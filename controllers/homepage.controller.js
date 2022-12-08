@@ -34,6 +34,7 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
         isAuthor: false,
+        homepageTitle: card.homepageTitle,
         cardImageData: card.cardImageData,
         isPublished: card.isPublished,
       },
@@ -50,6 +51,7 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
         homepageLink: card.homepageLink,
         isAuthor: true,
         cardImageData: card.cardImageData,
+        homepageTitle: card.homepageTitle,
         isPublished: card.isPublished,
       },
     });
@@ -96,6 +98,7 @@ const renameHomepageTitle = handleErrorAsync(async (req, res, next) => {
         cardId: card._id,
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
+        homepageTitle: card.homepageTitle,
         isAuthor: true,
       },
     });
@@ -133,6 +136,7 @@ const addLink = handleErrorAsync(async (req, res, next) => {
         cardId: card._id,
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
+        homepageTitle: card.homepageTitle,
         isAuthor: true,
       },
     });
@@ -161,6 +165,7 @@ const deleteLink = handleErrorAsync(async (req, res, next) => {
         cardId: card._id,
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
+        homepageTitle: card.homepageTitle,
         isAuthor: true,
       },
     });
@@ -188,6 +193,7 @@ const editLink = handleErrorAsync(async (req, res, next) => {
         cardId: card._id,
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
+        homepageTitle: card.homepageTitle,
         isAuthor: true,
       },
     });
@@ -230,6 +236,7 @@ const updateLinkOrder = handleErrorAsync(async (req, res, next) => {
         cardId: card._id,
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
+        homepageTitle: card.homepageTitle,
         isAuthor: true,
       },
     });
@@ -255,6 +262,7 @@ const jobInfoToggle = handleErrorAsync(async (req, res, next) => {
         cardId: card._id,
         layoutDirection: card.layoutDirection,
         homepageLink: card.homepageLink,
+        homepageTitle: card.homepageTitle,
         isAuthor: true,
       },
     });
