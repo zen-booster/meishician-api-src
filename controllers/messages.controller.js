@@ -25,11 +25,12 @@ const readMessages = handleErrorAsync(async (req, res, next, err) => {
     isRead: message.isRead,
     messageBody: message.messageBody,
     createdAt: message.createdAt,
+    category: message.category,
   };
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
-      ...response,
+      ...responsePayload,
     },
   });
 });
@@ -48,6 +49,7 @@ const getMessages = handleErrorAsync(async (req, res, next, err) => {
     isRead: ele.isRead,
     messageBody: ele.messageBody,
     createdAt: ele.createdAt,
+    category: ele.category,
   }));
   return res.status(httpStatus.OK).send({
     status: 'success',
