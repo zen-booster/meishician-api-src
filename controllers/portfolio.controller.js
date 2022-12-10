@@ -109,6 +109,7 @@ const getCardCanvas = handleErrorAsync(async (req, res, next, err) => {
     data: {
       cardId,
       jobInfo: card.jobInfo,
+      isPublished: card.isPublished,
       canvasData: canvas.canvasData,
     },
   });
