@@ -8,6 +8,7 @@ const { generateJWT } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const handleErrorAsync = require('../utils/handleErrorAsync');
 const { query } = require('express');
+const { set } = require('lodash');
 
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -134,7 +135,7 @@ const unpinBookmark = handleErrorAsync(async (req, res, next) => {
 const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
   const { cardId } = req.params;
-  const updateData = _.pickBy(req.body, _.identity);
+  const updateData = req.body;
 
   const card = await Card.findById(cardId).exec();
 
@@ -152,17 +153,6 @@ const editBookmarkNote = handleErrorAsync(async (req, res, next) => {
   );
 
   if (updatedBookmark) {
-    //新增unique tag
-    const { tags: newTags } = updateData;
-    console.log(newTags);
-    if (newTags) {
-      const addNewTag = await BookmarkList.findOneAndUpdate(
-        { userId },
-        { $addToSet: { tags: { $each: newTags } } },
-        { new: true }
-      );
-      console.log(addNewTag);
-    }
     return res.status(httpStatus.OK).send({
       status: 'success',
     });
@@ -271,7 +261,10 @@ const deleteBookmarkList = handleErrorAsync(async (req, res, next) => {
 const updateBookmarkListOrder = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
 
-  const { followerGroupId, newIndex } = req.body;
+  const { followerGroupId } = req.params;
+
+  const { newIndex } = req.body;
+
   const doc = await BookmarkList.findOne({ userId });
 
   const oldIndex = doc.group.findIndex((ele) => {
@@ -289,9 +282,11 @@ const updateBookmarkListOrder = handleErrorAsync(async (req, res, next) => {
     return next(new AppError(400, 'wrong index'));
   }
 
-  doc.group.set(oldIndex, newValue);
-  doc.group.set(newIndex, oldValue);
-
+  // doc.group.set(oldIndex, newValue);
+  // doc.group.set(newIndex, oldValue);
+  doc.group.splice(oldIndex, 1);
+  doc.group.splice(newIndex, 0, oldValue);
+  doc.group = set(doc.group);
   const updatedBookmarkList = await doc.save();
 
   return res.status(httpStatus.OK).send({
@@ -346,9 +341,7 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
     .limit(limit)
     .skip(limit * (page - 1))
     .sort(asc)
-    .select(
-      '_id createdAt isPinned tags followerGroupId note tags  followerGroupId'
-    );
+    .select('_id createdAt isPinned tags  note tags  followerGroupId');
 
   const aggBookmarks = Bookmarks.map((ele) => {
     const { note, tags, followerGroupId, isPinned, createdAt } = ele;
@@ -381,7 +374,7 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
     apiResData = { ...apiResData, cardId: cardId ?? null };
 
     return apiResData;
-  });
+  }).filter((ele) => ele.cardId !== null);
 
   const totalCount = await Bookmark.find({ followerGroupId }).count();
 
@@ -399,12 +392,14 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
 
 const getTagList = handleErrorAsync(async (req, res, next) => {
   const userId = req.user._id;
-  const bookmarkList = await BookmarkList.findOne({ userId }).lean();
+  const tagList = await Bookmark.find({ '_id.followerUserId': userId })
+    .distinct('tags')
+    .lean();
 
   return res.status(httpStatus.OK).send({
     status: 'success',
     data: {
-      records: bookmarkList.tags,
+      records: tagList,
     },
   });
 });

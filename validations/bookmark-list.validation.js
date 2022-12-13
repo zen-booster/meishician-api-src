@@ -31,7 +31,7 @@ const editBookmarkNote = {
   }),
   body: Joi.object()
     .keys({
-      note: Joi.string(),
+      note: Joi.string().allow('', null),
       tags: Joi.array().items(Joi.string()),
       followerGroupId: Joi.string().required().custom(objectID),
     })
@@ -77,8 +77,10 @@ const deleteBookmarkList = {
  *      additionalProperties: false
  */
 const updateBookmarkListOrder = {
-  body: Joi.object().keys({
+  params: Joi.object().keys({
     followerGroupId: Joi.string().required().custom(objectID).required(),
+  }),
+  body: Joi.object().keys({
     newIndex: Joi.number().required(),
   }),
 };

@@ -409,7 +409,7 @@ router.post(
  */
 
 router.delete(
-  '/groups/:followerGroupId/name',
+  '/groups/:followerGroupId/',
   isAuth(),
   validate(bookmarkListValidation.deleteBookmarkList),
   bookmarkListController.deleteBookmarkList
@@ -471,7 +471,7 @@ router.patch(
  *                              example: false
  */
 router.patch(
-  '/groups/order',
+  '/groups/:followerGroupId/order',
   isAuth(),
   validate(bookmarkListValidation.updateBookmarkListOrder),
   bookmarkListController.updateBookmarkListOrder

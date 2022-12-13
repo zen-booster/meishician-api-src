@@ -95,8 +95,9 @@ const deleteCard = handleErrorAsync(async (req, res, next, err) => {
 
 const getCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   const { cardId } = req.params;
+  const userId = req.user._id;
 
-  const card = await Card.findById(cardId).exec();
+  const card = await Card.findOne({ _id: cardId, userId }).exec();
 
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
@@ -119,7 +120,8 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
   const { canvasData, cardImageData, layoutDirection } = req.body;
   const { cardId } = req.params;
 
-  const card = await Card.findById(cardId).exec();
+  const userId = req.user._id;
+  const card = await Card.findOne({ _id: cardId, userId }).exec();
 
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
@@ -149,12 +151,12 @@ const saveCardCanvas = handleErrorAsync(async (req, res, next, err) => {
 
 const publishCard = handleErrorAsync(async (req, res, next, err) => {
   const { cardId } = req.params;
-
-  const card = await Card.findByIdAndUpdate(
-    cardId,
+  const userId = req.user._id;
+  const card = await Card.findOneAndUpdate(
+    { _id: cardId, userId },
     { isPublished: true },
     { new: true }
-  );
+  ).exec();
 
   if (card === null) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
