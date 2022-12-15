@@ -16,6 +16,7 @@ const isAuth = (isBypass = false) =>
     }
 
     [, token] = token.split(' ');
+    console.log('auth', token);
 
     const decodedPayload = await new Promise((resolve, reject) => {
       jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
@@ -26,6 +27,9 @@ const isAuth = (isBypass = false) =>
         }
       });
     });
+
+    console.log('decodedPayload', decodedPayload);
+
     // 尋找是否有此id
     const currentUser = await User.findById(decodedPayload.id);
 
@@ -34,6 +38,7 @@ const isAuth = (isBypass = false) =>
         !isBypass && new AppError(httpStatus.NOT_FOUND, '找不到此用戶')
       );
     }
+    console.log('currentUser', currentUser);
     req.user = currentUser;
     return next();
   });

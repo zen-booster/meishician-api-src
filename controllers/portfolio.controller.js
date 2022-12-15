@@ -14,17 +14,18 @@ const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
   isPublished = isPublished ? isPublished : true;
 
   const cardArr = await Card.find({
-    $and: [{ userId }, { isPublished }],
+    $and: [{ userId }],
   }).lean();
 
   const cardInfoArr = cardArr.map((ele) => {
-    const { jobInfo, userId, _id: cardId, canvasId } = ele;
+    const { jobInfo, userId, _id: cardId, canvasId, createdAt } = ele;
     return {
       name: jobInfo?.name?.content,
       companyName: jobInfo?.companyName?.content,
       jobTitle: jobInfo?.jobTitle?.content,
       cardId,
-      canvasId,
+      isPublished,
+      createdAt,
     };
   });
 

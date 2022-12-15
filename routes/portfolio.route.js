@@ -231,6 +231,7 @@ router.post(
  */
 
 router.get('/:cardId/canvas', isAuth(), portfolioController.getCardCanvas);
+
 router.patch(
   '/:cardId/canvas',
   isAuth(),
@@ -315,11 +316,11 @@ router.put(
   portfolioController.editCardJobInfo
 );
 
-// router.get(
-//   '/:cardId/',
-//   isAuth(),
-//   validate(portfolioValidation.getCard),
-//   portfolioController.getCard
-// );
+router.get(
+  '/:cardId/',
+  isAuth(),
+  validate(portfolioValidation.getCard),
+  portfolioController.getCard
+);
 
 module.exports = router;

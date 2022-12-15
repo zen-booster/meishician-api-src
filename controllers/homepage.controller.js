@@ -22,13 +22,17 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
     );
   }
   let { jobInfo } = card;
+
   if (!userId) {
-    jonInfo = Object.entries(jobInfo)
+    jobInfo = Object.entries(jobInfo)
       .filter((ele) => ele[1].isPublic === true)
       .reduce((a, v) => ({ ...a, [v[0]]: v[1] }), {});
+    console.log(jobInfo);
     return res.status(httpStatus.OK).send({
       status: 'success',
       data: {
+        role: 'guest',
+        isPublished: card.isPublished,
         jobInfo,
         cardId: card._id,
         layoutDirection: card.layoutDirection,
@@ -36,15 +40,15 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
         isAuthor: false,
         homepageTitle: card.homepageTitle,
         cardImageData: card.cardImageData,
-        isPublished: card.isPublished,
       },
     });
   }
 
-  if (card.userId.toString() === userId.toString()) {
+  if (!!userId && card.userId.toString() === userId.toString()) {
     return res.status(httpStatus.OK).send({
       status: 'success',
       data: {
+        role: 'author',
         jobInfo,
         cardId: card._id,
         layoutDirection: card.layoutDirection,
@@ -55,7 +59,30 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
         isPublished: card.isPublished,
       },
     });
-  } else {
+  }
+
+  if (!!userId && card.userId.toString() !== userId.toString()) {
+    const bookmark = await Bookmark.findOne({
+      '_id.followerUserId': userId,
+      '_id.followedCardId': cardId,
+    });
+    jobInfo = Object.entries(jobInfo)
+      .filter((ele) => ele[1].isPublic === true)
+      .reduce((a, v) => ({ ...a, [v[0]]: v[1] }), {});
+    return res.status(httpStatus.OK).send({
+      status: 'success',
+      data: {
+        role: bookmark ? 'bookmarkedMember' : 'nonBookmarkedMember',
+        jobInfo,
+        isPublished: card.isPublished,
+        cardId: card._id,
+        layoutDirection: card.layoutDirection,
+        homepageLink: card.homepageLink,
+        isAuthor: false,
+        homepageTitle: card.homepageTitle,
+        cardImageData: card.cardImageData,
+      },
+    });
   }
 });
 
