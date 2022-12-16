@@ -325,11 +325,14 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
   const { followerGroupId } = req.params;
   let { limit, page } = req.query;
 
-  limit = limit ?? 10;
-  page = page ?? 1;
+  limit = limit ?? 9;
+  page = page ? parseInt(page, 10) : 1;
 
-  let { asc } = req.query;
-  asc = asc ? asc : 'createdAt';
+  let { desc } = req.query;
+
+  desc = desc ?? 'isPinned';
+  if (desc === 'isPinned') desc = { isPinned: -1, createdAt: -1 };
+  if (desc === 'createdAt') desc = { createdAt: -1 };
 
   const Bookmarks = await Bookmark.find({ followerGroupId })
     .populate({
@@ -340,7 +343,7 @@ const getBookmarks = handleErrorAsync(async (req, res, next) => {
     })
     .limit(limit)
     .skip(limit * (page - 1))
-    .sort(asc)
+    .sort(desc)
     .select('_id createdAt isPinned tags  note tags  followerGroupId');
 
   const aggBookmarks = Bookmarks.map((ele) => {
@@ -409,8 +412,8 @@ const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
   const { tag } = req.params;
   let { limit, page } = req.query;
 
-  limit = limit ?? 10;
-  page = page ?? 1;
+  limit = limit ?? 9;
+  page = page ? parseInt(page, 10) : 1;
 
   const Bookmarks = await Bookmark.find({
     '_id.followerUserId': userId,
@@ -424,7 +427,7 @@ const getTagBookmarks = handleErrorAsync(async (req, res, next) => {
     })
     .limit(limit)
     .skip(limit * (page - 1))
-    .sort('-createdAt')
+    .sort({ isPinned: -1, createdAt: -1 })
     .select(
       '_id createdAt isPinned tags followerGroupId note tags  followerGroupId'
     );
@@ -484,8 +487,8 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
   let { limit, page } = req.query;
   let { q } = req.query;
 
-  limit = limit ?? 10;
-  page = page ?? 1;
+  limit = limit ?? 9;
+  page = page ? parseInt(page, 10) : 1;
 
   let regex = q ? { $regex: new RegExp(q, 'i') } : null;
 
@@ -514,8 +517,8 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
     { $unwind: '$card' },
     {
       $lookup: {
-        from: 'users', // name of the collection, not model or schema name
-        localField: '_id.followerUserId',
+        from: 'users',
+        localField: 'card.userId',
         foreignField: '_id',
         as: 'user',
       },
@@ -524,6 +527,9 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
 
     {
       $match: query,
+    },
+    {
+      $sort: { isPinned: -1, createdAt: -1 },
     },
     {
       $skip: limit * (page - 1),
@@ -563,8 +569,6 @@ const searchBookmarks = handleErrorAsync(async (req, res, next) => {
 
   totalCount = totalCount.length;
   const totalPage = Math.ceil(totalCount / limit);
-
-  console.log(Bookmarks);
 
   const aggBookmarks = Bookmarks.map((ele) => {
     const { note, tags, followerGroupId, isPinned, createdAt } = ele;

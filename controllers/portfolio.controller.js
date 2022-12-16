@@ -14,7 +14,9 @@ const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
 
   const cardArr = await Card.find({
     $and: [{ userId }],
-  }).lean();
+  })
+    .sort({ createdAt: -1 })
+    .lean();
 
   const cardInfoArr = cardArr.map((ele) => {
     const {

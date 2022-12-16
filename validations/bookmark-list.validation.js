@@ -108,8 +108,8 @@ const renameBookmarkList = {
 const getBookmarks = {
   query: Joi.object().keys({
     page: Joi.number().default(1),
-    limit: Joi.number().default(10),
-    asc: Joi.string().default('-createdAt'),
+    limit: Joi.number(),
+    desc: Joi.string(),
   }),
   params: Joi.object().keys({
     followerGroupId: Joi.string().required().custom(objectID).required(),

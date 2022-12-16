@@ -42,7 +42,7 @@ const getMessages = handleErrorAsync(async (req, res, next, err) => {
   const filter = category
     ? { recipientUserId: userId, category }
     : { recipientUserId: userId };
-  const messages = await Message.find(filter);
+  const messages = await Message.find(filter).sort({ createdAt: -1 });
 
   const responsePayload = messages.map((ele) => ({
     messageId: ele._id,
