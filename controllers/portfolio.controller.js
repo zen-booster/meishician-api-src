@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 
-const { User, BookmarkList } = require('../models');
+const { User, BookmarkList, Bookmark } = require('../models');
 const { Card, Canvas } = require('../models/');
 
 const { portfolioValidation } = require('../validations/');
@@ -11,14 +11,20 @@ const handleErrorAsync = require('../utils/handleErrorAsync');
 const getPortfolio = handleErrorAsync(async (req, res, next, err) => {
   const userId = req.user._id;
   let { isPublished } = req.query;
-  isPublished = isPublished ? isPublished : true;
 
   const cardArr = await Card.find({
     $and: [{ userId }],
   }).lean();
 
   const cardInfoArr = cardArr.map((ele) => {
-    const { jobInfo, userId, _id: cardId, canvasId, createdAt } = ele;
+    const {
+      jobInfo,
+      userId,
+      _id: cardId,
+      canvasId,
+      createdAt,
+      isPublished,
+    } = ele;
     return {
       name: jobInfo?.name?.content,
       companyName: jobInfo?.companyName?.content,
@@ -88,6 +94,8 @@ const deleteCard = handleErrorAsync(async (req, res, next, err) => {
   if (card.deletedCount === 0 || canvas.deletedCount === 0) {
     return next(new AppError(httpStatus.NOT_FOUND, 'cardId not found'));
   }
+
+  const bookmark = await Bookmark.deleteMany({ '_id.followedCardId': cardId });
 
   return res.status(httpStatus.CREATED).send({
     status: 'success',

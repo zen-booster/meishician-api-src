@@ -158,7 +158,7 @@ router.get(
 router.patch(
   '/:messageId/read',
   isAuth(),
-  // validate(messageValidation.get),
+  validate(messageValidation.get),
   messageController.readMessages
 );
 

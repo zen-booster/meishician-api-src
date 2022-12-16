@@ -38,11 +38,11 @@ const readMessages = handleErrorAsync(async (req, res, next, err) => {
 const getMessages = handleErrorAsync(async (req, res, next, err) => {
   const userId = req.user._id;
   let { category } = req.query;
-  const messages = await Message.find({ recipientUserId: userId, category });
 
-  if (messages === null) {
-    return next(new AppError(httpStatus.NOT_FOUND, 'messageId not found'));
-  }
+  const filter = category
+    ? { recipientUserId: userId, category }
+    : { recipientUserId: userId };
+  const messages = await Message.find(filter);
 
   const responsePayload = messages.map((ele) => ({
     messageId: ele._id,
