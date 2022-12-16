@@ -12,8 +12,6 @@ function uploadFile(req, res, next) {
 
     // fileFilter預設吃這三個函數
     fileFilter: (req, file, cb) => {
-      console.log(`${file.originalname}`);
-
       const ext = path.extname(file.originalname).toLowerCase();
       if (ext !== '.jpg' && ext !== '.png' && ext !== '.jpeg') {
         return cb(

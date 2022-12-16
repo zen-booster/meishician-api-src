@@ -27,7 +27,6 @@ const getHomepageInfo = handleErrorAsync(async (req, res, next) => {
     jobInfo = Object.entries(jobInfo)
       .filter((ele) => ele[1].isPublic === true)
       .reduce((a, v) => ({ ...a, [v[0]]: v[1] }), {});
-    console.log(jobInfo);
     return res.status(httpStatus.OK).send({
       status: 'success',
       data: {
