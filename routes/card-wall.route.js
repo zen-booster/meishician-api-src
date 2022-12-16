@@ -91,7 +91,7 @@ router.get(
     let { city, domain, name } = req.query;
 
     limit = limit ?? 12;
-    page = page ?? 1;
+    page = page ? parseInt(page, 10) : 1;
 
     console.log(limit, page);
     let query = {
@@ -102,11 +102,6 @@ router.get(
 
     query = _.omitBy(query, _.isNil);
 
-    console.log({
-      isPublished: true,
-      ...query,
-    });
-
     const cards = await Card.find({
       isPublished: true,
       ...query,
@@ -114,10 +109,11 @@ router.get(
       .populate('userId')
       .limit(limit)
       .skip(limit * (page - 1))
-      .sort('-createdAt');
+      .sort({ createdAt: -1 });
 
     const totalCount = await Card.find({
       isPublished: true,
+      ...query,
     }).count();
     const totalPage = Math.ceil(totalCount / limit);
 
@@ -141,6 +137,7 @@ router.get(
         currentPage: page,
         totalPage,
         limit: limit,
+        recordCount: response.length,
         records: response,
       },
     });
