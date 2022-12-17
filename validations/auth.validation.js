@@ -5,37 +5,6 @@ const { User } = require('../models');
 
 // const safetyQuestionEnum = User.schema.path('safetyQuestion').enumValues;
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    signUp:
- *      type: object
- *      required:
- *        - name
- *        - email
- *        - password
- *        - confirmPassword
- *        - safetyQuestion
- *        - safetyAnswer
- *      properties:
- *        name:
- *          type: string
- *          default: Jane Doe
- *        email:
- *          type: string
- *          default: jane.doe@example.com
- *        password:
- *          type: string
- *          default: stringPassword123
- *        confirmPassword:
- *          type: string
- *          default: stringPassword123
- *        avatar:
- *          type: string
- *      additionalProperties: false
- */
-
 const signUp = {
   body: Joi.object().keys({
     name: Joi.string().required(),
@@ -49,24 +18,6 @@ const signUp = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    login:
- *      type: object
- *      required:
- *        - email
- *        - password
- *      properties:
- *        email:
- *          type: string
- *          default: jane.doe@example.com
- *        password:
- *          type: string
- *          default: stringPassword123
- *      additionalProperties: false
- */
 const login = {
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -83,24 +34,6 @@ const resetPassword = {
       .messages({ 'any.only': '{{#label}} does not match' }),
   }),
 };
-/**
- * @openapi
- * components:
- *   schemas:
- *    updatePassword:
- *      type: object
- *      required:
- *        - email
- *        - password
- *      properties:
- *        password:
- *          type: string
- *          default: stringPassword123
- *        confirmPassword:
- *          type: string
- *          default: stringPassword123
- *      additionalProperties: false
- */
 const updatePassword = {
   body: Joi.object().keys({
     password: Joi.string().required().custom(password),
@@ -111,22 +44,6 @@ const updatePassword = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    updateProfile:
- *      type: object
- *      properties:
- *        name:
- *          type: string
- *          default: Jane Doe
- *        avatar:
- *          type: string
- *          example: 'https://i.imgur.com/fgOXKnw.jpg'
- *      additionalProperties: false
- *      minProperties: 1
- */
 const updateProfile = {
   body: Joi.object()
     .keys({

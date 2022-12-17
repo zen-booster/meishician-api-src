@@ -4,36 +4,12 @@ const { Card } = require('../models');
 
 const linkTypeEnum = Card.schema.path('homepageLink.type').enumValues;
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    getHomepageInfo:
- *      type: object
- *      properties:
- *        homepageTitle:
- *          type: string
- *          required: true
- *      additionalProperties: false
- */
 const getHomepageInfo = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID),
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    renameHomepageTitle:
- *      type: object
- *      properties:
- *        homepageTitle:
- *          type: string
- *          required: true
- *      additionalProperties: false
- */
 const renameHomepageTitle = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID),
@@ -43,28 +19,6 @@ const renameHomepageTitle = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    addLink:
- *      type: object
- *      properties:
- *        type:
- *          type: string
- *          required: true
- *        title:
- *          type: string
- *          required: true
- *        subTitle:
- *          type: string
- *        icon:
- *          type: string
- *        link:
- *          type: string
- *          required: true
- *      additionalProperties: false
- */
 const addLink = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID),
@@ -88,24 +42,6 @@ const deleteLink = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    editLink:
- *      type: object
- *      properties:
- *        type:
- *          type: string
- *        title:
- *          type: string
- *        subTitle:
- *        icon:
- *          type: string
- *        link:
- *          type: string
- *      additionalProperties: false
- */
 const editLink = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID),
@@ -123,18 +59,6 @@ const editLink = {
     .min(1),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    updateLinkOrder:
- *      type: object
- *      properties:
- *         newIndex:
- *           type: integer
- *
- *      additionalProperties: false
- */
 const updateLinkOrder = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID),
@@ -144,18 +68,6 @@ const updateLinkOrder = {
     newIndex: Joi.number().required(),
   }),
 };
-
-/**
- * @openapi
- * components:
- *   schemas:
- *    jobInfoToggle:
- *      type: object
- *      properties:
- *         jobInfo:
- *           type: string
- *      additionalProperties: false
- */
 
 const jobInfoToggle = {
   params: Joi.object().keys({
