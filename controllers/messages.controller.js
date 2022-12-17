@@ -42,10 +42,18 @@ const getMessages = handleErrorAsync(async (req, res, next, err) => {
   const filter = category
     ? { recipientUserId: userId, category }
     : { recipientUserId: userId };
-  const messages = await Message.find(filter).sort({ createdAt: -1 });
+  const messages = await Message.find(filter)
+    .populate('senderUserId')
+    .populate('senderCardId')
+    .sort({ createdAt: -1 });
 
+  console.log(messages);
   const responsePayload = messages.map((ele) => ({
     messageId: ele._id,
+    senderAvatar: ele.senderUserId.avatar,
+    senderName:
+      ele.senderCardId.jobInfo.name.isPublic &&
+      ele.senderCardId.jobInfo.name.content,
     isRead: ele.isRead,
     messageBody: ele.messageBody,
     createdAt: ele.createdAt,
