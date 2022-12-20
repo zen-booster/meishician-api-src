@@ -7,24 +7,6 @@ const checkCardId = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    editBookmarkNote:
- *      type: object
- *      properties:
- *        note:
- *          type: string
- *        tags:
- *          type: array
- *          items:
- *            type: string
- *        followerGroupId:
- *          type: string
- *      additionalProperties: false
- */
-
 const editBookmarkNote = {
   params: Joi.object().keys({
     cardId: Joi.string().required().custom(objectID).required(),
@@ -39,18 +21,6 @@ const editBookmarkNote = {
     .min(1),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    createBookmarkList:
- *      type: object
- *      properties:
- *        groupName:
- *          type: string
- *      additionalProperties: false
- */
-
 const createBookmarkList = {
   body: Joi.object().keys({
     groupName: Joi.string().required(),
@@ -63,19 +33,6 @@ const deleteBookmarkList = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    updateBookmarkListOrder:
- *      type: object
- *      properties:
- *        followerGroupId:
- *          type: string
- *        newIndex:
- *          type: integer
- *      additionalProperties: false
- */
 const updateBookmarkListOrder = {
   params: Joi.object().keys({
     followerGroupId: Joi.string().required().custom(objectID).required(),
@@ -85,17 +42,6 @@ const updateBookmarkListOrder = {
   }),
 };
 
-/**
- * @openapi
- * components:
- *   schemas:
- *    renameBookmarkList:
- *      type: object
- *      properties:
- *        newGroupName:
- *          type: string
- *      additionalProperties: false
- */
 const renameBookmarkList = {
   params: Joi.object().keys({
     followerGroupId: Joi.string().required().custom(objectID).required(),
