@@ -55,7 +55,7 @@ const resErrorProd = (err, res) => {
     console.log('未預期錯誤 請查明', err);
     res.status(500).json({
       status: 'error',
-      message: '系統發生錯誤，請洽管理員',
+      message: '系統發生錯誤',
       data: null,
     });
   }
