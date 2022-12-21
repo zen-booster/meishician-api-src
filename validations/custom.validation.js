@@ -6,8 +6,8 @@ const objectID = (value, helpers) => {
 };
 
 const password = (value, helpers) => {
-  if (!value.match(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z]).*$/)) {
-    return helpers.message('密碼至少為8碼, 至少1個大寫字母、1個小寫字母');
+  if (!value.match(/^(?=.{8,})(?=.*[a-zA-Z]).*$/)) {
+    return helpers.message('密碼至少為8碼, 至少1個字母');
   }
   return value;
 };
